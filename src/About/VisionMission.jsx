@@ -44,6 +44,7 @@ const getIconForType = (type) => {
     case 'mission':
       return <Mountain className="w-6 h-6 text-white" />;
     case 'goals':
+    case 'goal':
       return <Target className="w-6 h-6 text-white" />;
     case 'values':
       return <Heart className="w-6 h-6 text-white" />;
@@ -56,15 +57,16 @@ const getIconForType = (type) => {
 const getColorForType = (type) => {
   switch (type?.toLowerCase()) {
     case 'vision':
-      return { bg: 'bg-purple-100', overlay: 'bg-purple-200/60', card: 'bg-purple-600' };
+      return { bg: 'bg-purple-100', overlay: 'bg-purple-200/60', card: 'bg-purple-600', text: 'text-purple-700', border: 'border-purple-300' };
     case 'mission':
-      return { bg: 'bg-pink-100', overlay: 'bg-red-200/60', card: 'bg-red-600' };
+      return { bg: 'bg-pink-100', overlay: 'bg-red-200/60', card: 'bg-red-600', text: 'text-red-700', border: 'border-red-300' };
     case 'goals':
-      return { bg: 'bg-blue-100', overlay: 'bg-blue-200/60', card: 'bg-blue-600' };
+    case 'goal':
+      return { bg: 'bg-blue-100', overlay: 'bg-blue-200/60', card: 'bg-blue-600', text: 'text-blue-700', border: 'border-blue-300' };
     case 'values':
-      return { bg: 'bg-green-100', overlay: 'bg-green-200/60', card: 'bg-green-600' };
+      return { bg: 'bg-green-100', overlay: 'bg-green-200/60', card: 'bg-green-600', text: 'text-green-700', border: 'border-green-300' };
     default:
-      return { bg: 'bg-gray-100', overlay: 'bg-gray-200/60', card: 'bg-green-600' };
+      return { bg: 'bg-gray-100', overlay: 'bg-gray-200/60', card: 'bg-green-600', text: 'text-green-700', border: 'border-green-300' };
   }
 };
 
@@ -87,13 +89,22 @@ export default function VisionMission() {
       const result = await getVisionMissionPageData();
 
       if (result.success && result.data) {
+        // Normalize 'goal' type to 'goals'
+        const normalizeItems = (items) => items.map(item => ({
+          ...item,
+          type: item.type === 'goal' ? 'goals' : item.type
+        }));
+
+        const allItems = normalizeItems(result.data.allItems || []);
+        const goalsItems = allItems.filter(item => item.type === 'goals');
+
         setPageData({
           hero: result.data.hero || FALLBACK_HERO,
           vision: result.data.vision?.length > 0 ? result.data.vision : FALLBACK_ITEMS.vision,
           mission: result.data.mission?.length > 0 ? result.data.mission : FALLBACK_ITEMS.mission,
-          goals: result.data.goals?.length > 0 ? result.data.goals : FALLBACK_ITEMS.goals,
+          goals: goalsItems.length > 0 ? goalsItems : (result.data.goals?.length > 0 ? result.data.goals : FALLBACK_ITEMS.goals),
           values: result.data.values || [],
-          allItems: result.data.allItems || [],
+          allItems: allItems,
         });
         setError(null);
       } else {
@@ -153,27 +164,15 @@ export default function VisionMission() {
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/40"></div>
-
-        {/* Text Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center h-full min-h-[200px] md:min-h-[350px] text-center px-4">
-          <h1 className="text-2xl md:text-5xl font-bold text-white bg-green-900/80 px-6 py-2 rounded-lg shadow-lg">
-            {pageData.hero?.title || FALLBACK_HERO.title}
-          </h1>
-          {pageData.hero?.description && (
-            <p className="text-white/90 mt-4 max-w-2xl text-lg">
-              {pageData.hero.description}
-            </p>
-          )}
-        </div>
       </section>
 
       {/* Main Description Section */}
       <section className="container py-12">
         <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-6">
-          {pageData.hero?.subtitle || "OUR VISION AND MISSION"}
+          {pageData.hero?.title || "OUR VISION AND MISSION"}
         </h2>
         <p className="text-gray-800 leading-relaxed text-base md:text-lg max-w-4xl">
-          {pageData.hero?.longDescription ||
+          {pageData.hero?.description ||
             "We are committed to creating positive change in communities through our dedicated work. Our vision guides us toward a better future, while our mission drives our daily actions. Together with our partners and supporters, we strive to make a lasting impact on the lives of those we serve."}
         </p>
       </section>
@@ -239,99 +238,161 @@ export default function VisionMission() {
         </section>
       )}
 
-      {/* Individual Sections for Each Type */}
-      {pageData.vision.map((item, index) => (
-        <section key={item._id || `vision-${index}`} className="container py-12">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-6">
-            {item.title?.toUpperCase() || "OUR VISION"}
-          </h2>
-          <p className="text-gray-800 leading-relaxed text-base md:text-lg max-w-4xl">
-            {item.description}
-          </p>
-        </section>
-      ))}
-
-      {pageData.mission.map((item, index) => (
-        <section key={item._id || `mission-${index}`} className="container py-12">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-6">
-            {item.title?.toUpperCase() || "OUR MISSION"}
-          </h2>
-          <p className="text-gray-800 leading-relaxed text-base md:text-lg max-w-4xl">
-            {item.description}
-          </p>
-        </section>
-      ))}
-
-      {pageData.goals.map((item, index) => (
-        <section key={item._id || `goals-${index}`} className="container py-12">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-6">
-            {item.title?.toUpperCase() || "OUR GOALS"}
-          </h2>
-          <p className="text-gray-800 leading-relaxed text-base md:text-lg max-w-4xl">
-            {item.description}
-          </p>
-        </section>
-      ))}
-
-      {pageData.values.map((item, index) => (
-        <section key={item._id || `values-${index}`} className="container py-12">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-6">
-            {item.title?.toUpperCase() || "OUR VALUES"}
-          </h2>
-          <p className="text-gray-800 leading-relaxed text-base md:text-lg max-w-4xl">
-            {item.description}
-          </p>
-        </section>
-      ))}
-
-      {/* Cards Section */}
-      {cardItems.length > 0 && (
-        <section className="py-16 bg-gradient-to-b from-green-900 to-white">
-          <div className={`container grid gap-10 px-6 ${cardItems.length === 1 ? 'md:grid-cols-1 max-w-md mx-auto' :
-              cardItems.length === 2 ? 'md:grid-cols-2 max-w-2xl mx-auto' :
-                cardItems.length === 3 ? 'md:grid-cols-3' :
-                  'md:grid-cols-4'
-            }`}>
-            {cardItems.map((item, index) => (
-              <div
-                key={item._id || index}
-                className="relative group transform transition duration-500 hover:scale-105"
-              >
-                <div className="relative flex flex-col items-center transition-transform duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl">
-                  {/* Icon Tab */}
-                  <div className={`${getColorForType(item.type).card} relative z-20 px-4 py-3 rounded-full shadow-lg`}>
-                    {getIconForType(item.type)}
+      {/* Individual Sections for Each Type - UPDATED WITH IMAGES */}
+      {pageData.vision.map((item, index) => {
+        const colors = getColorForType('vision');
+        const isEven = index % 2 === 0;
+        return (
+          <section key={item._id || `vision-${index}`} className={`py-12 ${isEven ? 'bg-white' : 'bg-gray-50'}`}>
+            <div className="container">
+              <div className={`grid md:grid-cols-2 gap-8 items-center ${!isEven ? 'md:flex-row-reverse' : ''}`}>
+                {/* Text Content */}
+                <div className={`${!isEven ? 'md:order-2' : ''}`}>
+                  <div className={`inline-flex items-center gap-2 ${colors.bg} ${colors.text} px-3 py-1 rounded-full text-sm font-semibold mb-4`}>
+                    {getIconForType('vision')}
+                    <span>Vision</span>
                   </div>
-
-                  {/* Card */}
-                  <div className="bg-white border border-green-900 rounded-2xl shadow-md pt-12 pb-10 px-8 min-h-[320px] w-full flex flex-col justify-start mt-[-24px]">
-                    <h3 className="text-xl md:text-2xl font-extrabold mb-6 text-green-700 group-hover:text-green-900">
-                      {item.displayTitle || item.title}
-                    </h3>
-                    <p className="text-gray-700 text-base leading-relaxed">
-                      {item.description}
-                    </p>
-
-                    {/* Optional: Show image thumbnail */}
-                    {item.computedImageUrl && (
-                      <div className="mt-4 rounded-lg overflow-hidden">
-                        <img
-                          src={item.computedImageUrl}
-                          alt={item.title}
-                          className="w-full h-32 object-cover"
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    )}
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-4">
+                    {item.title?.toUpperCase() || "OUR VISION"}
+                  </h2>
+                  <p className="text-gray-800 leading-relaxed text-base md:text-lg">
+                    {item.description}
+                  </p>
+                </div>
+                {/* Image */}
+                <div className={`${!isEven ? 'md:order-1' : ''}`}>
+                  <div className={`relative rounded-2xl overflow-hidden shadow-lg border-4 ${colors.border}`}>
+                    <img
+                      src={item.computedImageUrl || FALLBACK_IMAGE}
+                      alt={item.title || "Vision"}
+                      className="w-full h-64 md:h-80 object-cover"
+                      onError={(e) => { e.target.src = FALLBACK_IMAGE; }}
+                    />
+                    <div className={`absolute inset-0 ${colors.overlay} opacity-30`}></div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+          </section>
+        );
+      })}
+
+      {pageData.mission.map((item, index) => {
+        const colors = getColorForType('mission');
+        const isEven = index % 2 === 0;
+        return (
+          <section key={item._id || `mission-${index}`} className={`py-12 ${isEven ? 'bg-gray-50' : 'bg-white'}`}>
+            <div className="container">
+              <div className={`grid md:grid-cols-2 gap-8 items-center`}>
+                {/* Image */}
+                <div className={`${isEven ? '' : 'md:order-2'}`}>
+                  <div className={`relative rounded-2xl overflow-hidden shadow-lg border-4 ${colors.border}`}>
+                    <img
+                      src={item.computedImageUrl || FALLBACK_IMAGE}
+                      alt={item.title || "Mission"}
+                      className="w-full h-64 md:h-80 object-cover"
+                      onError={(e) => { e.target.src = FALLBACK_IMAGE; }}
+                    />
+                    <div className={`absolute inset-0 ${colors.overlay} opacity-30`}></div>
+                  </div>
+                </div>
+                {/* Text Content */}
+                <div className={`${isEven ? '' : 'md:order-1'}`}>
+                  <div className={`inline-flex items-center gap-2 ${colors.bg} ${colors.text} px-3 py-1 rounded-full text-sm font-semibold mb-4`}>
+                    {getIconForType('mission')}
+                    <span>Mission</span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-4">
+                    {item.title?.toUpperCase() || "OUR MISSION"}
+                  </h2>
+                  <p className="text-gray-800 leading-relaxed text-base md:text-lg">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      {pageData.goals.map((item, index) => {
+        const colors = getColorForType('goals');
+        const isEven = index % 2 === 0;
+        return (
+          <section key={item._id || `goals-${index}`} className={`py-12 ${isEven ? 'bg-white' : 'bg-gray-50'}`}>
+            <div className="container">
+              <div className={`grid md:grid-cols-2 gap-8 items-center ${!isEven ? 'md:flex-row-reverse' : ''}`}>
+                {/* Text Content */}
+                <div className={`${!isEven ? 'md:order-2' : ''}`}>
+                  <div className={`inline-flex items-center gap-2 ${colors.bg} ${colors.text} px-3 py-1 rounded-full text-sm font-semibold mb-4`}>
+                    {getIconForType('goals')}
+                    <span>Goals</span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-4">
+                    {item.title?.toUpperCase() || "OUR GOALS"}
+                  </h2>
+                  <p className="text-gray-800 leading-relaxed text-base md:text-lg">
+                    {item.description}
+                  </p>
+                </div>
+                {/* Image */}
+                <div className={`${!isEven ? 'md:order-1' : ''}`}>
+                  <div className={`relative rounded-2xl overflow-hidden shadow-lg border-4 ${colors.border}`}>
+                    <img
+                      src={item.computedImageUrl || FALLBACK_IMAGE}
+                      alt={item.title || "Goals"}
+                      className="w-full h-64 md:h-80 object-cover"
+                      onError={(e) => { e.target.src = FALLBACK_IMAGE; }}
+                    />
+                    <div className={`absolute inset-0 ${colors.overlay} opacity-30`}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      {pageData.values.map((item, index) => {
+        const colors = getColorForType('values');
+        const isEven = index % 2 === 0;
+        return (
+          <section key={item._id || `values-${index}`} className={`py-12 ${isEven ? 'bg-gray-50' : 'bg-white'}`}>
+            <div className="container">
+              <div className={`grid md:grid-cols-2 gap-8 items-center`}>
+                {/* Image */}
+                <div className={`${isEven ? '' : 'md:order-2'}`}>
+                  <div className={`relative rounded-2xl overflow-hidden shadow-lg border-4 ${colors.border}`}>
+                    <img
+                      src={item.computedImageUrl || FALLBACK_IMAGE}
+                      alt={item.title || "Values"}
+                      className="w-full h-64 md:h-80 object-cover"
+                      onError={(e) => { e.target.src = FALLBACK_IMAGE; }}
+                    />
+                    <div className={`absolute inset-0 ${colors.overlay} opacity-30`}></div>
+                  </div>
+                </div>
+                {/* Text Content */}
+                <div className={`${isEven ? '' : 'md:order-1'}`}>
+                  <div className={`inline-flex items-center gap-2 ${colors.bg} ${colors.text} px-3 py-1 rounded-full text-sm font-semibold mb-4`}>
+                    {getIconForType('values')}
+                    <span>Values</span>
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-4">
+                    {item.title?.toUpperCase() || "OUR VALUES"}
+                  </h2>
+                  <p className="text-gray-800 leading-relaxed text-base md:text-lg">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      {/* Cards Section */}
+     
     </div>
   );
 }

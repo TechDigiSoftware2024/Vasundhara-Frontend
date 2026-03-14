@@ -384,10 +384,7 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Developer Credit (Optional) */}
-          <p className="text-center text-xs text-gray-500 mt-4">
-            Designed & Developed with 💚 for a better tomorrow
-          </p>
+       
         </div>
       </div>
     </footer>

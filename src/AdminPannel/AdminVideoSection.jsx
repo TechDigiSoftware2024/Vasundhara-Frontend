@@ -70,6 +70,9 @@ function VideoFormModal({ isOpen, onClose, onSave, editData, isLoading }) {
     });
     const [urlError, setUrlError] = useState("");
 
+    // UPDATED: Description Limit
+    const MAX_DESC_LENGTH = 400;
+
     useEffect(() => {
         if (isOpen) {
             if (editData) {
@@ -146,14 +149,21 @@ function VideoFormModal({ isOpen, onClose, onSave, editData, isLoading }) {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Description <span className="text-xs font-normal text-gray-500">(Max {MAX_DESC_LENGTH} chars)</span>
+                            </label>
                             <textarea
                                 value={formData.videoDescription}
                                 onChange={(e) => setFormData({ ...formData, videoDescription: e.target.value })}
+                                maxLength={MAX_DESC_LENGTH}
                                 rows={3}
                                 className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
                                 placeholder="Enter video description..."
                             />
+                            {/* UPDATED: Character Counter */}
+                            <div className="text-right text-xs text-gray-500 mt-1">
+                                {formData.videoDescription.length}/{MAX_DESC_LENGTH}
+                            </div>
                         </div>
 
                         <div>

@@ -42,9 +42,6 @@ import {
 import AdminAboutSection from "./AdminAboutSection";
 import AdminVideoSection from "./AdminVideoSection";
 
-// Import AdminAboutSection Component
-// import AdminAboutSection from "./Components/AdminAboutSection";
-
 /* ---------- Toast Component ---------- */
 function Toast({ message, type, onDismiss }) {
   useEffect(() => {
@@ -86,18 +83,10 @@ function ConfirmationModal({ isOpen, title, message, onConfirm, onCancel, isLoad
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">
-          <button
-            onClick={onCancel}
-            disabled={isLoading}
-            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-          >
+          <button onClick={onCancel} disabled={isLoading} className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50" >
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            disabled={isLoading}
-            className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
-          >
+          <button onClick={onConfirm} disabled={isLoading} className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2" >
             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
             Delete
           </button>
@@ -136,9 +125,10 @@ function HeroFormModal({ isOpen, onClose, onSave, editData, isLoading }) {
         setImagePreview(editData.computedImageUrl || editData.imageUrl || "");
         setUploadType(editData.useUpload ? "file" : "url");
       } else {
+        // UPDATED: Default "Test" for title and subtitle
         setFormData({
-          title: "",
-          subtitle: "",
+          title: "Test",
+          subtitle: "Test",
           imageUrl: "",
           autoplay: true,
           duration: 5,
@@ -609,10 +599,7 @@ function PreviewModal({ isOpen, src, title, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-xl p-4 max-w-4xl w-full relative" onClick={(e) => e.stopPropagation()}>
-        <button
-          onClick={onClose}
-          className="absolute -top-3 -right-3 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100"
-        >
+        <button onClick={onClose} className="absolute -top-3 -right-3 p-2 bg-white rounded-full shadow-lg hover:bg-gray-100" >
           <X className="w-5 h-5" />
         </button>
         <h3 className="font-semibold text-lg mb-3">{title}</h3>
@@ -1303,20 +1290,20 @@ export default function AdminHome() {
 
       {/* Animation Styles */}
       <style>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(100%);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        .animate-slideIn {
-          animation: slideIn 0.3s ease-out;
-        }
-      `}</style>
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    .animate-slideIn {
+      animation: slideIn 0.3s ease-out;
+    }
+  `}</style>
     </div>
   );
 }

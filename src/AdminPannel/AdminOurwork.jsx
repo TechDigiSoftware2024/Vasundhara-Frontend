@@ -34,9 +34,287 @@ import {
   fileToDataURL,
 } from "../api/admin/ourWorkAdminApi";
 
-/* ---------- Helpers & Configuration ---------- */
+/* ---------- Constants ---------- */
+const MAX_DESCRIPTION_LENGTH = 800;
+const MAX_TITLE_LENGTH = 200;
 
-// Safer UID
+/* ---------- Validation Helper Function ---------- */
+const validateText = (text, maxLength, fieldName = "Text") => {
+  const length = text?.length || 0;
+  return {
+    isValid: length <= maxLength,
+    length,
+    remaining: maxLength - length,
+    message: length > maxLength
+      ? `${fieldName} exceeds maximum length by ${length - maxLength} characters`
+      : null
+  };
+};
+
+/* ---------- Truncate text to max length (for paste handling) ---------- */
+const truncateText = (text, maxLength) => {
+  if (!text) return text;
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength);
+};
+
+/* ---------- Enhanced Character Counter Component ---------- */
+const CharacterCounter = ({ current, max, fieldName = "Text" }) => {
+  const remaining = max - current;
+  const percentage = (current / max) * 100;
+
+  // Determine status
+  const isOverLimit = current > max;
+  const isAtLimit = current === max;
+  const isWarning = remaining <= 100 && remaining > 0;
+  const isNearWarning = remaining <= 200 && remaining > 100;
+
+  // Determine color classes
+  let textColorClass = "text-gray-500";
+  let barColorClass = "bg-green-500";
+
+  if (isOverLimit) {
+    textColorClass = "text-red-600 font-bold";
+    barColorClass = "bg-red-500";
+  } else if (isAtLimit) {
+    textColorClass = "text-orange-600 font-semibold";
+    barColorClass = "bg-orange-500";
+  } else if (isWarning) {
+    textColorClass = "text-yellow-600 font-medium";
+    barColorClass = "bg-yellow-500";
+  } else if (isNearWarning) {
+    textColorClass = "text-blue-600";
+    barColorClass = "bg-blue-500";
+  }
+
+  return (
+    <div className="mt-1 space-y-1">
+      {/* Progress bar */}
+      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className={`h-full transition-all duration-300 ${barColorClass}`}
+          style={{ width: `${Math.min(percentage, 100)}%` }}
+        />
+      </div>
+
+      {/* Character count text */}
+      <div className={`text-xs text-right flex justify-between items-center ${textColorClass}`}>
+        <span>
+          {isOverLimit && (
+            <span className="flex items-center gap-1">
+              <AlertTriangle className="w-3 h-3" />
+              Exceeds limit by {Math.abs(remaining)} characters
+            </span>
+          )}
+          {isAtLimit && !isOverLimit && (
+            <span className="flex items-center gap-1">
+              <CheckCircle className="w-3 h-3" />
+              Character limit reached
+            </span>
+          )}
+          {isWarning && !isAtLimit && !isOverLimit && (
+            <span>{remaining} characters remaining</span>
+          )}
+        </span>
+        <span>{current} / {max}</span>
+      </div>
+    </div>
+  );
+};
+
+/* ---------- TextArea with Character Limit Component ---------- */
+const LimitedTextarea = ({ value, onChange, maxLength, fieldName, rows = 4, placeholder, className = "", ...props }) => {
+  const [error, setError] = useState("");
+  const textareaRef = useRef(null);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+
+    if (newValue.length <= maxLength) {
+      onChange(e);
+      setError("");
+    } else {
+      // Truncate and show error
+      const truncated = truncateText(newValue, maxLength);
+      e.target.value = truncated;
+      onChange(e);
+      setError(`Maximum ${maxLength} characters allowed. Text has been truncated.`);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text');
+    const currentText = value || "";
+    const cursorPos = e.target.selectionStart;
+    const selectionEnd = e.target.selectionEnd;
+
+    const beforeCursor = currentText.substring(0, cursorPos);
+    const afterCursor = currentText.substring(selectionEnd);
+    const newText = beforeCursor + pastedText + afterCursor;
+
+    if (newText.length <= maxLength) {
+      onChange({ target: { value: newText } });
+      setError("");
+    } else {
+      const availableSpace = maxLength - beforeCursor.length - afterCursor.length;
+      const truncatedPaste = pastedText.substring(0, Math.max(0, availableSpace));
+      onChange({ target: { value: beforeCursor + truncatedPaste + afterCursor } });
+      setError(`Pasted text was truncated to fit ${maxLength} character limit.`);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    const currentLength = value?.length || 0;
+    const isAtLimit = currentLength >= maxLength;
+    const isControlKey = e.ctrlKey || e.metaKey;
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Tab'];
+
+    if (isAtLimit && !allowedKeys.includes(e.key) && !isControlKey) {
+      const hasSelection = textareaRef.current &&
+        textareaRef.current.selectionStart !== textareaRef.current.selectionEnd;
+
+      if (!hasSelection) {
+        e.preventDefault();
+        setError(`Maximum ${maxLength} characters reached.`);
+        setTimeout(() => setError(""), 2000);
+      }
+    }
+  };
+
+  // Determine border color based on length
+  const currentLength = value?.length || 0;
+  let borderClass = "border-gray-300 focus:ring-green-500";
+  if (currentLength >= maxLength) {
+    borderClass = "border-orange-400 bg-orange-50 focus:ring-orange-500";
+  } else if (currentLength >= maxLength - 100) {
+    borderClass = "border-yellow-400 bg-yellow-50 focus:ring-yellow-500";
+  }
+
+  return (
+    <div className="space-y-1">
+      <textarea
+        ref={textareaRef}
+        value={value || ""}
+        onChange={handleChange}
+        onPaste={handlePaste}
+        onKeyDown={handleKeyDown}
+        rows={rows}
+        maxLength={maxLength}
+        className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:border-transparent transition-colors ${borderClass} ${className}`}
+        placeholder={placeholder}
+        {...props}
+      />
+      {error && (
+        <div className="flex items-center gap-1 text-xs text-red-600">
+          <AlertTriangle className="w-3 h-3" />
+          {error}
+        </div>
+      )}
+      <CharacterCounter current={currentLength} max={maxLength} fieldName={fieldName} />
+    </div>
+  );
+};
+
+/* ---------- Input with Character Limit Component ---------- */
+const LimitedInput = ({ value, onChange, maxLength, fieldName, placeholder, className = "", ...props }) => {
+  const [error, setError] = useState("");
+  const inputRef = useRef(null);
+
+  const handleChange = (e) => {
+    const newValue = e.target.value;
+
+    if (newValue.length <= maxLength) {
+      onChange(e);
+      setError("");
+    } else {
+      // Truncate and show error
+      const truncated = truncateText(newValue, maxLength);
+      e.target.value = truncated;
+      onChange(e);
+      setError(`Maximum ${maxLength} characters allowed. Text has been truncated.`);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text');
+    const currentText = value || "";
+    const cursorPos = e.target.selectionStart;
+    const selectionEnd = e.target.selectionEnd;
+
+    const beforeCursor = currentText.substring(0, cursorPos);
+    const afterCursor = currentText.substring(selectionEnd);
+    const newText = beforeCursor + pastedText + afterCursor;
+
+    if (newText.length <= maxLength) {
+      onChange({ target: { value: newText } });
+      setError("");
+    } else {
+      const availableSpace = maxLength - beforeCursor.length - afterCursor.length;
+      const truncatedPaste = pastedText.substring(0, Math.max(0, availableSpace));
+      onChange({ target: { value: beforeCursor + truncatedPaste + afterCursor } });
+      setError(`Pasted text was truncated to fit ${maxLength} character limit.`);
+      setTimeout(() => setError(""), 3000);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    const currentLength = value?.length || 0;
+    const isAtLimit = currentLength >= maxLength;
+    const isControlKey = e.ctrlKey || e.metaKey;
+    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Tab'];
+
+    if (isAtLimit && !allowedKeys.includes(e.key) && !isControlKey) {
+      const hasSelection = inputRef.current &&
+        inputRef.current.selectionStart !== inputRef.current.selectionEnd;
+
+      if (!hasSelection) {
+        e.preventDefault();
+        setError(`Maximum ${maxLength} characters reached.`);
+        setTimeout(() => setError(""), 2000);
+      }
+    }
+  };
+
+  // Determine border color based on length
+  const currentLength = value?.length || 0;
+  let borderClass = "border-gray-300 focus:ring-green-500";
+  if (currentLength >= maxLength) {
+    borderClass = "border-orange-400 bg-orange-50 focus:ring-orange-500";
+  } else if (currentLength >= maxLength - 50) {
+    borderClass = "border-yellow-400 bg-yellow-50 focus:ring-yellow-500";
+  }
+
+  return (
+    <div className="space-y-1">
+      <input
+        ref={inputRef}
+        type="text"
+        value={value || ""}
+        onChange={handleChange}
+        onPaste={handlePaste}
+        onKeyDown={handleKeyDown}
+        maxLength={maxLength}
+        className={`w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:border-transparent transition-colors ${borderClass} ${className}`}
+        placeholder={placeholder}
+        {...props}
+      />
+      {error && (
+        <div className="flex items-center gap-1 text-xs text-red-600">
+          <AlertTriangle className="w-3 h-3" />
+          {error}
+        </div>
+      )}
+      <CharacterCounter current={currentLength} max={maxLength} fieldName={fieldName} />
+    </div>
+  );
+};
+
+/* ---------- Safer UID ---------- */
 const uid = () =>
   typeof crypto !== "undefined" && crypto.randomUUID
     ? crypto.randomUUID()
@@ -240,9 +518,11 @@ function CreatePageModal({
               value={pageName}
               onChange={(e) => setPageName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              maxLength={MAX_TITLE_LENGTH}
               className="w-full border-2 border-gray-300 focus:border-green-500 focus:ring-green-500 rounded-lg p-2.5"
               placeholder="e.g., Government"
             />
+            <CharacterCounter current={pageName.length} max={MAX_TITLE_LENGTH} fieldName="Page name" />
           </div>
 
           {/* Image Source Toggle */}
@@ -348,13 +628,13 @@ function CreatePageModal({
 
 /* ---------- Page Editor (react-hook-form) ---------- */
 const editorSchema = yup.object({
-  heroTitle: yup.string().max(1000, "Keep it concise").nullable(),
-  whyTitle: yup.string().max(300).nullable(),
-  whyDescription: yup.string().max(5000).nullable(),
-  whatTitle: yup.string().max(300).nullable(),
-  whatDescription: yup.string().max(5000).nullable(),
-  solutionsTitle: yup.string().max(300).nullable(),
-  solutionsDescription: yup.string().max(8000).nullable(),
+  heroTitle: yup.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} characters`).nullable(),
+  whyTitle: yup.string().max(MAX_TITLE_LENGTH, `Maximum ${MAX_TITLE_LENGTH} characters`).nullable(),
+  whyDescription: yup.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} characters`).nullable(),
+  whatTitle: yup.string().max(MAX_TITLE_LENGTH, `Maximum ${MAX_TITLE_LENGTH} characters`).nullable(),
+  whatDescription: yup.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} characters`).nullable(),
+  solutionsTitle: yup.string().max(MAX_TITLE_LENGTH, `Maximum ${MAX_TITLE_LENGTH} characters`).nullable(),
+  solutionsDescription: yup.string().max(MAX_DESCRIPTION_LENGTH, `Maximum ${MAX_DESCRIPTION_LENGTH} characters`).nullable(),
 });
 
 function SectionWrapper({ title, open, onToggle, children }) {
@@ -725,8 +1005,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
                   type="button"
                   onClick={() => setHeroUploadType("file")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${heroUploadType === "file"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                 >
                   <Upload className="w-4 h-4" /> Upload
@@ -735,8 +1015,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
                   type="button"
                   onClick={() => setHeroUploadType("url")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${heroUploadType === "url"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                 >
                   <LinkIcon className="w-4 h-4" /> URL
@@ -771,10 +1051,12 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
               )}
 
               <label className="font-semibold block mt-4 mb-2">Hero Title</label>
-              <textarea
-                {...register("heroTitle")}
+              <LimitedTextarea
+                value={wHeroTitle}
+                onChange={(e) => setValue("heroTitle", e.target.value, { shouldDirty: true })}
+                maxLength={MAX_DESCRIPTION_LENGTH}
+                fieldName="Hero title"
                 rows={3}
-                className="w-full border p-3 rounded-md"
                 placeholder="Enter hero title..."
               />
             </div>
@@ -819,18 +1101,21 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
           onToggle={() => toggle("whySection")}
         >
           <label className="font-semibold block mb-2">Title</label>
-          <input
-            type="text"
-            {...register("whyTitle")}
-            className="w-full border p-3 rounded-md"
+          <LimitedInput
+            value={wWhyTitle}
+            onChange={(e) => setValue("whyTitle", e.target.value, { shouldDirty: true })}
+            maxLength={MAX_TITLE_LENGTH}
+            fieldName="Why title"
             placeholder={`WHY ${page?.name?.toUpperCase() || ""}?`}
           />
 
           <label className="font-semibold block mt-4 mb-2">Description</label>
-          <textarea
-            {...register("whyDescription")}
+          <LimitedTextarea
+            value={wWhyDescription}
+            onChange={(e) => setValue("whyDescription", e.target.value, { shouldDirty: true })}
+            maxLength={MAX_DESCRIPTION_LENGTH}
+            fieldName="Why description"
             rows={6}
-            className="w-full border p-3 rounded-md"
             placeholder="Enter why section description..."
           />
         </SectionWrapper>
@@ -845,19 +1130,22 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
             <div className="space-y-4">
               <div>
                 <label className="font-semibold block mb-2">Title</label>
-                <input
-                  type="text"
-                  {...register("whatTitle")}
-                  className="w-full border p-3 rounded-md"
+                <LimitedInput
+                  value={wWhatTitle}
+                  onChange={(e) => setValue("whatTitle", e.target.value, { shouldDirty: true })}
+                  maxLength={MAX_TITLE_LENGTH}
+                  fieldName="What we do title"
                   placeholder="Enter what we do title..."
                 />
               </div>
               <div>
                 <label className="font-semibold block mb-2">Description</label>
-                <textarea
-                  {...register("whatDescription")}
+                <LimitedTextarea
+                  value={wWhatDescription}
+                  onChange={(e) => setValue("whatDescription", e.target.value, { shouldDirty: true })}
+                  maxLength={MAX_DESCRIPTION_LENGTH}
+                  fieldName="What we do description"
                   rows={6}
-                  className="w-full border p-3 rounded-md"
                   placeholder="Enter what we do description..."
                 />
               </div>
@@ -872,8 +1160,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
                   type="button"
                   onClick={() => setWhatUploadType("file")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${whatUploadType === "file"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                 >
                   <Upload className="w-4 h-4" /> Upload
@@ -882,8 +1170,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
                   type="button"
                   onClick={() => setWhatUploadType("url")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 ${whatUploadType === "url"
-                    ? "bg-green-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                 >
                   <LinkIcon className="w-4 h-4" /> URL
@@ -958,18 +1246,21 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
           onToggle={() => toggle("solutions")}
         >
           <label className="font-semibold block mb-2">Title</label>
-          <input
-            type="text"
-            {...register("solutionsTitle")}
-            className="w-full border p-3 rounded-md"
+          <LimitedInput
+            value={wSolutionsTitle}
+            onChange={(e) => setValue("solutionsTitle", e.target.value, { shouldDirty: true })}
+            maxLength={MAX_TITLE_LENGTH}
+            fieldName="Solutions title"
             placeholder={`Sustainable Solutions to ${page?.name || ""} Sanitation`}
           />
 
           <label className="font-semibold block mt-4 mb-2">Description</label>
-          <textarea
-            {...register("solutionsDescription")}
+          <LimitedTextarea
+            value={wSolutionsDescription}
+            onChange={(e) => setValue("solutionsDescription", e.target.value, { shouldDirty: true })}
+            maxLength={MAX_DESCRIPTION_LENGTH}
+            fieldName="Solutions description"
             rows={8}
-            className="w-full border p-3 rounded-md"
             placeholder="Enter solutions description..."
           />
 
@@ -982,7 +1273,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
             </p>
 
             {/* Add image button - disabled if max reached */}
-            <label className={`cursor-pointer inline-flex items-center gap-2 ${totalSolutionsImages >= 4 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <label className={`cursor-pointer inline-flex items-center gap-2 ${totalSolutionsImages >= 4 ? 'opacity-50 cursor-not-allowed' : ''
+              }`}>
               <input
                 type="file"
                 accept="image/*"
@@ -991,7 +1283,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
                 onChange={handleSolutionsFilesChange}
                 disabled={totalSolutionsImages >= 4}
               />
-              <div className={`bg-blue-500 text-white py-2 px-4 rounded-md inline-flex items-center gap-2 ${totalSolutionsImages >= 4 ? '' : 'hover:bg-blue-600'}`}>
+              <div className={`bg-blue-500 text-white py-2 px-4 rounded-md inline-flex items-center gap-2 ${totalSolutionsImages >= 4 ? '' : 'hover:bg-blue-600'
+                }`}>
                 <Plus size={16} /> Add Image{totalSolutionsImages >= 4 ? ' (Max reached)' : ''}
               </div>
             </label>
@@ -1086,7 +1379,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
             </p>
 
             {/* Add image button - disabled if max reached */}
-            <label className={`cursor-pointer inline-flex items-center gap-2 ${totalGalleryImages >= 6 ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            <label className={`cursor-pointer inline-flex items-center gap-2 ${totalGalleryImages >= 6 ? 'opacity-50 cursor-not-allowed' : ''
+              }`}>
               <input
                 type="file"
                 accept="image/*"
@@ -1095,7 +1389,8 @@ function PageEditorRHF({ page, onBack, onSave, isLoading }) {
                 onChange={handleGalleryFilesChange}
                 disabled={totalGalleryImages >= 6}
               />
-              <div className={`bg-blue-500 text-white py-2 px-4 rounded-md inline-flex items-center gap-2 ${totalGalleryImages >= 6 ? '' : 'hover:bg-blue-600'}`}>
+              <div className={`bg-blue-500 text-white py-2 px-4 rounded-md inline-flex items-center gap-2 ${totalGalleryImages >= 6 ? '' : 'hover:bg-blue-600'
+                }`}>
                 <Plus size={16} /> Add Image{totalGalleryImages >= 6 ? ' (Max reached)' : ''}
               </div>
             </label>

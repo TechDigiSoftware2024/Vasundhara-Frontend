@@ -32,86 +32,18 @@ const FALLBACK_AREAS = [
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80";
 
-// Single Area Card Component
-function AreaCard({ area, index, isVisible }) {
-  const isEven = index % 2 === 0;
-  const imageUrl = area.computedImageUrl || area.image || area.imageUrl || FALLBACK_IMAGE;
-
+// Standardized Image Component
+function StandardizedImage({ src, alt, className = "" }) {
   return (
-    <div
-      className={`container grid md:grid-cols-2 gap-12 items-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
-    >
-      {/* Conditional Order: Text first for even, Image first for odd */}
-      {isEven ? (
-        <>
-          {/* Left Content */}
-          <div className="text-center md:text-left">
-            <h3 className="text-2xl font-extrabold text-green-900 mb-4">
-              {area.title}
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {area.description}
-            </p>
-            {area.highlights && area.highlights.length > 0 && (
-              <ul className="mt-4 space-y-2">
-                {area.highlights.map((highlight, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-gray-700">
-                    <span className="text-green-600 mt-1">✓</span>
-                    {highlight}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* Right Image */}
-          <div className="flex justify-center">
-            <img
-              src={imageUrl}
-              alt={area.title}
-              className="rounded-xl shadow-lg w-full h-auto max-h-80 object-cover"
-              onError={(e) => {
-                e.target.src = FALLBACK_IMAGE;
-              }}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          {/* Left Image */}
-          <div className="flex justify-center order-2 md:order-1">
-            <img
-              src={imageUrl}
-              alt={area.title}
-              className="rounded-xl shadow-lg w-full h-auto max-h-80 object-cover"
-              onError={(e) => {
-                e.target.src = FALLBACK_IMAGE;
-              }}
-            />
-          </div>
-
-          {/* Right Content */}
-          <div className="text-center md:text-left order-1 md:order-2">
-            <h3 className="text-2xl font-extrabold text-green-900 mb-4">
-              {area.title}
-            </h3>
-            <p className="text-gray-700 leading-relaxed">
-              {area.description}
-            </p>
-            {area.highlights && area.highlights.length > 0 && (
-              <ul className="mt-4 space-y-2">
-                {area.highlights.map((highlight, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-gray-700">
-                    <span className="text-green-600 mt-1">✓</span>
-                    {highlight}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </>
-      )}
+    <div className={`relative w-full h-56 sm:h-64 md:h-72 lg:h-80 rounded-xl overflow-hidden shadow-lg ${className}`}>
+      <img
+        src={src}
+        alt={alt}
+        className="absolute inset-0 w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+        onError={(e) => {
+          e.target.src = FALLBACK_IMAGE;
+        }}
+      />
     </div>
   );
 }
@@ -142,7 +74,7 @@ function AnimatedAreaCard({ area, index }) {
   return (
     <div
       id={`area-card-${area._id || index}`}
-      className={`container grid md:grid-cols-2 gap-12 items-center mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      className={`container grid md:grid-cols-2 gap-8 lg:gap-12 items-center mb-12 lg:mb-16 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
     >
       {isEven ? (
@@ -150,33 +82,36 @@ function AnimatedAreaCard({ area, index }) {
           {/* Left Content */}
           <div
             className={`text-center md:text-left transition-all duration-700 delay-200 ${isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 -translate-x-10"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-10"
               }`}
           >
-            <h3 className="text-2xl font-extrabold text-green-900 mb-4">
+            <h3 className="text-xl sm:text-2xl font-extrabold text-green-900 mb-4">
               {area.title}
             </h3>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
               {area.description}
             </p>
+            {area.highlights && area.highlights.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {area.highlights.map((highlight, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
+                    <span className="text-green-600 mt-1 flex-shrink-0">✓</span>
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Right Image */}
           <div
             className={`flex justify-center transition-all duration-700 delay-300 ${isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-10"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-10"
               }`}
           >
-            <img
-              src={imageUrl}
-              alt={area.title}
-              className="rounded-xl shadow-lg w-full h-auto max-h-80 object-cover hover:scale-105 transition-transform duration-500"
-              onError={(e) => {
-                e.target.src = FALLBACK_IMAGE;
-              }}
-            />
+            <StandardizedImage src={imageUrl} alt={area.title} />
           </div>
         </>
       ) : (
@@ -184,33 +119,71 @@ function AnimatedAreaCard({ area, index }) {
           {/* Left Image */}
           <div
             className={`flex justify-center order-2 md:order-1 transition-all duration-700 delay-200 ${isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 -translate-x-10"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 -translate-x-10"
               }`}
           >
-            <img
-              src={imageUrl}
-              alt={area.title}
-              className="rounded-xl shadow-lg w-full h-auto max-h-80 object-cover hover:scale-105 transition-transform duration-500"
-              onError={(e) => {
-                e.target.src = FALLBACK_IMAGE;
-              }}
-            />
+            <StandardizedImage src={imageUrl} alt={area.title} />
           </div>
 
           {/* Right Content */}
           <div
             className={`text-center md:text-left order-1 md:order-2 transition-all duration-700 delay-300 ${isVisible
-                ? "opacity-100 translate-x-0"
-                : "opacity-0 translate-x-10"
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-10"
               }`}
           >
-            <h3 className="text-2xl font-extrabold text-green-900 mb-4">
+            <h3 className="text-xl sm:text-2xl font-extrabold text-green-900 mb-4">
               {area.title}
             </h3>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
               {area.description}
             </p>
+            {area.highlights && area.highlights.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {area.highlights.map((highlight, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
+                    <span className="text-green-600 mt-1 flex-shrink-0">✓</span>
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Loading Skeleton for Area Cards
+function AreaCardSkeleton({ index }) {
+  const isEven = index % 2 === 0;
+
+  return (
+    <div className="container grid md:grid-cols-2 gap-8 lg:gap-12 items-center mb-12 lg:mb-16 animate-pulse">
+      {isEven ? (
+        <>
+          <div className="space-y-4">
+            <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
+          </div>
+          <div className="h-56 sm:h-64 md:h-72 lg:h-80 bg-gray-200 rounded-xl"></div>
+        </>
+      ) : (
+        <>
+          <div className="h-56 sm:h-64 md:h-72 lg:h-80 bg-gray-200 rounded-xl order-2 md:order-1"></div>
+          <div className="space-y-4 order-1 md:order-2">
+            <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            </div>
           </div>
         </>
       )}
@@ -243,18 +216,25 @@ export default function AboutWorkSection() {
     fetchAreas();
   }, []);
 
-  // Loading state
+  // Loading state with skeletons
   if (loading) {
     return (
-      <section className="bg-white py-16">
-        <div className="container">
-          <h2 className="text-center text-3xl font-bold text-green-900 mb-12">
-            Areas We Work
-          </h2>
-          <div className="flex justify-center py-10">
-            <div className="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
+      <section className="bg-white py-12 lg:py-16">
+        <div className="container mb-10 lg:mb-12">
+          <div className="text-center">
+            <div className="inline-block px-4 py-1 bg-green-100 rounded-full mb-4 animate-pulse">
+              <div className="h-4 w-20 bg-green-200 rounded"></div>
+            </div>
+            <div className="h-10 bg-gray-200 rounded w-64 mx-auto mb-4 animate-pulse"></div>
+            <div className="h-4 bg-gray-200 rounded w-96 max-w-full mx-auto animate-pulse"></div>
+            <div className="w-24 h-1 bg-gray-200 mx-auto rounded-full mt-6 animate-pulse"></div>
           </div>
         </div>
+
+        {/* Skeleton Cards */}
+        {[0, 1, 2].map((index) => (
+          <AreaCardSkeleton key={index} index={index} />
+        ))}
       </section>
     );
   }
@@ -262,7 +242,7 @@ export default function AboutWorkSection() {
   // Empty state
   if (areas.length === 0) {
     return (
-      <section className="bg-white py-16">
+      <section className="bg-white py-12 lg:py-16">
         <div className="container text-center">
           <h2 className="text-3xl font-bold text-green-900 mb-6">
             Areas We Work
@@ -274,17 +254,17 @@ export default function AboutWorkSection() {
   }
 
   return (
-    <section className="bg-white py-16 overflow-hidden">
+    <section className="bg-white py-12 lg:py-16 overflow-hidden">
       {/* Section Heading */}
-      <div className="container mb-12">
+      <div className="container mb-10 lg:mb-12">
         <div className="text-center">
           <span className="inline-block px-4 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold mb-4">
             Our Focus
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-green-900">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-900">
             Areas We Work
           </h2>
-          <p className="text-gray-600 mt-3 max-w-2xl mx-auto">
+          <p className="text-gray-600 mt-3 max-w-2xl mx-auto text-sm sm:text-base">
             Discover the various sectors where we make a meaningful impact through our initiatives.
           </p>
           <div className="w-24 h-1 bg-green-600 mx-auto rounded-full mt-6"></div>

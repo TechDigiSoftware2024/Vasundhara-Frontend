@@ -84,9 +84,9 @@ export default function HeroSection() {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-black/40"></div>
+      {/* <div className="absolute inset-0 bg-black/40"></div> */}
 
-      <div className="container relative z-10">
+      {/* <div className="container relative z-10">
         <div className="max-w-3xl">
           <p className="text-lg md:text-xl mb-4">
             {current.subtitle || "Volunteer. Lead. Inspire"}
@@ -96,7 +96,7 @@ export default function HeroSection() {
             {current.title || "Welcome to Our NGO"}
           </h1>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

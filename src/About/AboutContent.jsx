@@ -154,12 +154,12 @@ export default function AboutContent() {
               }}
             >
               {/* Black fade effect */}
-              <div className="absolute inset-0 bg-black/40"></div>
+              {/* <div className="absolute inset-0 bg-black/40"></div> */}
             </div>
           ))}
         </div>
 
-        {/* Content */}
+        {/* Content
         <div className="relative z-10 text-center text-white container px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
             {currentHero.title || "BETTER LIFE FOR FUTURE"}
@@ -174,7 +174,7 @@ export default function AboutContent() {
               {currentHero.description}
             </p>
           )}
-        </div>
+        </div> */}
 
         {/* Slide Indicators */}
         {heroImages.length > 1 && (
@@ -184,8 +184,8 @@ export default function AboutContent() {
                 key={index}
                 onClick={() => setCurrentImage(index)}
                 className={`h-2 rounded-full transition-all duration-300 ${index === currentImage
-                  ? "w-8 bg-white"
-                  : "w-2 bg-white/50 hover:bg-white/80"
+                    ? "w-8 bg-white"
+                    : "w-2 bg-white/50 hover:bg-white/80"
                   }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -211,9 +211,9 @@ export default function AboutContent() {
               </div>
             ) : (
               <>
-                <h4 className="text-green-800 font-semibold text-lg mb-2">
+                {/* <h4 className="text-green-800 font-semibold text-lg mb-2">
                   {aboutData?.subtitle || "Who We Are"}
-                </h4>
+                </h4> */}
                 <h2 className="text-3xl md:text-4xl font-extrabold text-green-900 mb-6">
                   {aboutData?.title || "About NGO"}
                 </h2>
@@ -274,19 +274,23 @@ export default function AboutContent() {
             )}
           </div>
 
-          {/* Right Image */}
+          {/* Right Image - FIXED with standardized size */}
           <div className="flex justify-center">
             {aboutLoading ? (
-              <div className="w-full max-w-lg h-80 bg-gray-200 rounded-xl animate-pulse"></div>
+              <div className="w-full max-w-lg h-80 md:h-96 bg-gray-200 rounded-xl animate-pulse"></div>
             ) : (
-              <img
-                src={aboutData?.image || aboutData?.imageUrl || FALLBACK_ABOUT.computedImageUrl}
-                alt={aboutData?.title || "About Us"}
-                className="rounded-xl shadow-lg w-full max-w-lg h-auto object-cover"
-                onError={(e) => {
-                  e.target.src = FALLBACK_ABOUT.computedImageUrl;
-                }}
-              />
+              <div className="w-full max-w-lg">
+                <div className="relative w-full h-72 sm:h-80 md:h-96 lg:h-[400px] rounded-xl overflow-hidden shadow-lg">
+                  <img
+                    src={aboutData?.computedImageUrl || FALLBACK_ABOUT.computedImageUrl}
+                    alt={aboutData?.title || "About Us"}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = FALLBACK_ABOUT.computedImageUrl;
+                    }}
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>

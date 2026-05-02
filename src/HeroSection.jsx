@@ -1,102 +1,109 @@
-// src/components/HeroSection.jsx
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { getHeroSlides } from "./api/public/heroApi";
-// import { getHeroSlides } from "../api/public/heroApi";
 
 export default function HeroSection() {
   const [slides, setSlides] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
-  // Fallback data
+  // fallback
   const fallbackSlides = [
     {
-      computedImageUrl: "https://picsum.photos/id/1015/1600/600",
-      title: "Welcome to Our NGO - World's Leading Volunteering Organization",
+      computedImageUrl: "https://picsum.photos/id/1015/1600/900",
+      title: "Welcome to Our NGO",
       subtitle: "Volunteer. Lead. Inspire",
-      duration: 3,
+      durationMs: 3000,
     },
   ];
 
-  // 🔹 Fetch data from API
+  // fetch API
   useEffect(() => {
     const fetchData = async () => {
       const result = await getHeroSlides();
-      if (result.success && result.data?.length > 0) {
-        setSlides(result.data);
-      } else {
-        setSlides(fallbackSlides);
-      }
+      setSlides(
+        result.success && result.data?.length
+          ? result.data
+          : fallbackSlides
+      );
     };
     fetchData();
   }, []);
 
-  // 🔹 Preload images
+  // preload images
   useEffect(() => {
-    if (slides.length === 0) return;
+    if (!slides.length) return;
 
-    let loadedCount = 0;
-    slides.forEach((slide) => {
+    let count = 0;
+    slides.forEach((s) => {
       const img = new Image();
-      img.src = slide.computedImageUrl || slide.imageUrl;
-      img.onload = () => {
-        loadedCount++;
-        if (loadedCount === slides.length) setLoaded(true);
-      };
-      img.onerror = () => {
-        loadedCount++;
-        if (loadedCount === slides.length) setLoaded(true);
+      img.src = s.computedImageUrl;
+      img.onload = img.onerror = () => {
+        count++;
+        if (count === slides.length) setLoaded(true);
       };
     });
   }, [slides]);
 
-  // 🔹 Auto-slide
+  // autoplay (FIXED: durationMs used)
   useEffect(() => {
     if (!loaded || slides.length <= 1) return;
 
-    const duration = (slides[currentIndex]?.duration || 3) * 1000;
+    const duration = slides[currentIndex]?.durationMs || 3000;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
     }, duration);
 
     return () => clearInterval(interval);
-  }, [slides, loaded, currentIndex]);
+  }, [currentIndex, slides, loaded]);
 
-  // Current slide data
-  const current = slides[currentIndex] || {};
-
-  if (slides.length === 0) {
+  if (!slides.length) {
     return (
-      <section className="relative h-[100vh] flex items-center justify-center bg-gray-900 text-white">
+      <section className="h-screen flex items-center justify-center bg-black">
         <div className="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
       </section>
     );
   }
 
   return (
-    <section
-      className="relative h-[100vh] flex items-center text-white transition-all duration-1000"
-      style={{
-        backgroundImage: `url(${current.computedImageUrl || current.imageUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      {/* <div className="absolute inset-0 bg-black/40"></div> */}
+    <section className="relative h-[60vh] sm:h-[70vh] md:h-[85vh] lg:h-screen w-full overflow-hidden">
 
-      {/* <div className="container relative z-10">
-        <div className="max-w-3xl">
-          <p className="text-lg md:text-xl mb-4">
-            {current.subtitle || "Volunteer. Lead. Inspire"}
-          </p>
+      {/* SLIDES */}
+      <div className="absolute inset-0">
+        {slides.map((slide, i) => (
+          <img
+            key={i}
+            src={slide.computedImageUrl}
+            alt=""
+            className={`absolute inset-0 w-full h-full 
+              object-contain md:object-cover 
+              object-center 
+              transition-all duration-1000 ease-in-out
+              ${i === currentIndex ? "opacity-100 scale-100" : "opacity-0 scale-105"}
+            `}
+          />
+        ))}
+      </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            {current.title || "Welcome to Our NGO"}
-          </h1>
-        </div>
-      </div> */}
+      {/* OVERLAY */}
+      <div className="absolute inset-0 bg-black/10" />
+
+     
+
+      {/* DOTS */}
+      <div className="absolute bottom-4 sm:bottom-6 w-full flex justify-center gap-2 z-20">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentIndex(i)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              i === currentIndex
+                ? "w-6 bg-white"
+                : "w-2 bg-white/50"
+            }`}
+          />
+        ))}
+      </div>
     </section>
   );
 }

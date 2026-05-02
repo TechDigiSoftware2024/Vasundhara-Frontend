@@ -1,4 +1,7 @@
 // API base (set VITE_API_URL in your .env to override)
+
+import Gallery from "../Pages/Gallery";
+
 // If your backend runs on port 4000, set VITE_API_URL=http://localhost:4000/api
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -41,12 +44,14 @@ export const ENDPOINTS = {
     // Generic module roots (compat)
     HOME: '/home',
     ABOUT: '/about',                   // (About items under HOME.ABOUT_ROUTES)
-    CONTACT: '/inquiries',             // public POST contact form, admin GET/DELETE
+    CONTACT: '/inquiries', 
+         // public POST contact form, admin GET/DELETE
     OUR_WORK: '/our-work',
     VISION_MISSION: '/vm',
     SETTINGS: '/settings',
     PROFILE: '/profile',               // Profile singleton route
-    RECEIPT: '/receipt',               // (not implemented here)
+    RECEIPT: '/receipt',      
+             // (not implemented here)
 
     // Detailed, organized routes
     AUTH_ROUTES: {
@@ -158,7 +163,9 @@ export const ENDPOINTS = {
         // - solutionsImages (1..4 files)
         // - galleryImages (3..6 files)
     },
-
+    GALLERY_ROUTES: {
+    LIST: "/gallery",
+},
     // Invoices
     INVOICES_ROUTES: {
         LIST: '/invoices',                                   // GET (auth)
@@ -199,6 +206,7 @@ export const ENDPOINTS = {
         DELETE_PICTURE: '/profile/picture',                  // DELETE (admin) - Remove profile picture
         RESET: '/profile/reset',                             // DELETE (admin) - Reset profile to defaults
     },
+
 
     DASHBOARD_ROUTES: {
         // Main overview stats

@@ -1,0 +1,459 @@
+import { useEffect, useRef, useState } from "react";
+import { getGalleryData } from "../api/public/galleryApi";
+import { IMAGES } from "../utils/constants";
+
+// fallback images
+import g1 from "../../../Vasundhara-Backend/public/newimg/gallery1.jpg";
+import g2 from "../../../Vasundhara-Backend/public/newimg/gallery2.jpg";
+import g3 from "../../../Vasundhara-Backend/public/newimg/gallery3.jpg";
+import g4 from "../../../Vasundhara-Backend/public/newimg/gallery4.jpg";
+import g5 from "../../../Vasundhara-Backend/public/newimg/gallery5.jpg";
+import g6 from "../../../Vasundhara-Backend/public/newimg/gallery6.jpg";
+
+export default function Gallery() {
+  const [active, setActive] = useState(0);
+  const [lightbox, setLightbox] = useState(null);
+  const [reveal, setReveal] = useState(50);
+  const [loading, setLoading] = useState(true);
+
+  const sliderRef = useRef(null);
+
+  // ✅ DEFAULT STATIC (fallback)
+  const [slides, setSlides] = useState([g1, g2, g3, g4, g5]);
+
+  const [beforeAfter, setBeforeAfter] = useState({
+    before: g1,
+    after: g6,
+  });
+
+  const [featured, setFeatured] = useState([
+    { src: g1, title: "Green Mission 2025", tag: "Reforestation" },
+    { src: g2, title: "Light of Learning", tag: "Education" },
+    { src: g3, title: "Meals of Hope", tag: "Food Drive" },
+    { src: g4, title: "Healing Hands Camp", tag: "Healthcare" },
+  ]);
+
+  const [stories, setStories] = useState([
+    { img: g2, title: "Aarav's First Book", text: "From street corners to classrooms — one boy, one book, a brand new life." },
+    { img: g3, title: "A Warm Meal", text: "Hunger has no holiday. Every plate served is a promise kept." },
+    { img: g5, title: "United We Rise", text: "Strangers became family the moment they joined hands." },
+  ]);
+
+  const [timeline, setTimeline] = useState([
+    { date: "Mar 2025", loc: "Jaipur, IN", title: "Tree Plantation Drive", img: g1 },
+    { date: "Jan 2025", loc: "Delhi, IN", title: "Winter Food Drive", img: g3 },
+    { date: "Nov 2024", loc: "Pune, IN", title: "Free Health Camp", img: g4 },
+    { date: "Aug 2024", loc: "Mumbai, IN", title: "School Reopening", img: g2 },
+  ]);
+
+  const [stats, setStats] = useState([
+    { img: g1, n: "1,00,000+", label: "Trees Planted" },
+    { img: g2, n: "12,500", label: "Children Educated" },
+    { img: g3, n: "3 Lakh+", label: "Meals Served" },
+    { img: g4, n: "850", label: "Health Camps" },
+  ]);
+
+  // ✅ API INTEGRATION (WITHOUT BREAKING UI)
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await getGalleryData();
+
+      if (res.success) {
+        const d = res.data;
+
+        if (d.heroSlides?.length) setSlides(d.heroSlides);
+
+        if (d.beforeAfter) {
+          setBeforeAfter({
+            before: d.beforeAfter.before || g1,
+            after: d.beforeAfter.after || g6,
+          });
+        }
+
+        if (d.featured?.length) {
+          setFeatured(
+            d.featured.map((f) => ({
+              src: f.computedImageUrl,
+              title: f.title,
+              tag: f.tag,
+            }))
+          );
+        }
+
+        if (d.stories?.length) {
+          setStories(
+            d.stories.map((s) => ({
+              img: s.computedImageUrl,
+              title: s.title,
+              text: s.text,
+            }))
+          );
+        }
+
+        if (d.timeline?.length) {
+          setTimeline(
+            d.timeline.map((t) => ({
+              img: t.computedImageUrl,
+              title: t.title,
+              date: t.date,
+              loc: t.loc,
+            }))
+          );
+        }
+
+        if (d.stats?.length) {
+          setStats(
+            d.stats.map((s) => ({
+              img: s.computedImageUrl,
+              n: s.value,
+              label: s.label,
+            }))
+          );
+        }
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  // AUTO SLIDER
+  useEffect(() => {
+    const id = setInterval(() => {
+      setActive((a) => (a + 1) % slides.length);
+    }, 4500);
+    return () => clearInterval(id);
+  }, [slides]);
+
+  // DRAG
+  const onDrag = (e) => {
+    const el = sliderRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const x = e.touches?.length ? e.touches[0].clientX : e.clientX;
+
+    const pct = Math.max(
+      0,
+      Math.min(100, ((x - rect.left) / rect.width) * 100)
+    );
+
+    setReveal(pct);
+  };
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        Loading Gallery...
+      </div>
+    );
+  }
+
+  return (
+    <main className="bg-background text-foreground">
+
+      {/* HERO (UNCHANGED UI) */}
+      <section className="relative h-[68vh] overflow-hidden">
+        {slides.map((s, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: i === active ? 1 : 0 }}
+          >
+            <img src={IMAGES.url(s)} className="h-full w-full object-cover" />
+          </div>
+        ))}
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 flex h-full items-center justify-center text-white text-center">
+          <div>
+            <h1 className="text-5xl font-bold">Gallery</h1>
+            <p className="mt-4">Moments that define our impact</p>
+          </div>
+        </div>
+      </section>
+
+      {/* BEFORE AFTER (UNCHANGED) */}
+      <section className="p-10">
+        <div
+          ref={sliderRef}
+          className="relative w-full h-[400px] overflow-hidden cursor-ew-resize"
+          onMouseMove={(e) => e.buttons === 1 && onDrag(e)}
+          onTouchMove={onDrag}
+        >
+          <img src={beforeAfter.after} className="absolute w-full h-full object-cover" />
+          <div className="absolute top-0 left-0 h-full overflow-hidden" style={{ width: `${reveal}%` }}>
+            <img src={beforeAfter.before} className="w-full h-full object-cover" />
+          </div>
+        </div>
+      </section>
+
+  
+     {/* LIGHTBOX */}
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          className="fixed inset-0 bg-black/90 flex items-center justify-center"
+        >
+          <img src={lightbox} className="max-w-[90%] max-h-[90%]" />
+        </div>
+      )}
+      {/* ===== 2. HIGHLIGHT SHOWCASE ===== */}
+<section className="px-6 py-24 md:px-12">
+  <div className="mx-auto max-w-7xl">
+    
+    <div className="mb-12 flex items-end justify-between">
+      <div>
+        <p className="text-xs uppercase tracking-[0.3em] text-yellow-600">
+          Featured
+        </p>
+        <h2 className="text-4xl md:text-5xl font-semibold mt-2">
+          Highlight Showcase
+        </h2>
+      </div>
+
+      <div className="hidden md:block h-px flex-1 ml-12 bg-gray-300" />
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      {featured.map((f, i) => (
+        <button
+          key={i}
+          onClick={() => setLightbox(f.src)}
+          className="group relative overflow-hidden rounded-2xl bg-gray-100 aspect-[3/4]"
+        >
+          <img
+            src={f.src}
+            alt={f.title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+          <div className="absolute bottom-0 left-0 right-0 p-5 text-left text-white transform translate-y-3 group-hover:translate-y-0 transition-all duration-500">
+            <p className="text-xs uppercase tracking-wider text-yellow-400">
+              {f.tag}
+            </p>
+            <h3 className="text-xl mt-1 font-semibold">
+              {f.title}
+            </h3>
+          </div>
+        </button>
+      ))}
+    </div>
+
+  </div>
+</section>
+<section className="px-6 py-24 md:px-12 bg-gray-900 text-white">
+  <div className="mx-auto max-w-7xl">
+
+    {/* Heading */}
+    <div className="mb-14 text-center">
+      <p className="fade-up text-xs uppercase tracking-[0.3em] text-yellow-400">
+        Untold
+      </p>
+
+      <h2 className="fade-up fade-delay-1 text-4xl md:text-5xl font-semibold mt-2">
+        Stories Behind Photos
+      </h2>
+    </div>
+
+    {/* Cards */}
+    <div className="grid md:grid-cols-3 gap-8">
+      {stories.map((s, i) => (
+        <article
+          key={i}
+          className="fade-up group rounded-2xl overflow-hidden bg-white/5 border border-white/10 backdrop-blur-sm hover:-translate-y-2 transition-all duration-500"
+          style={{ animationDelay: `${i * 0.2}s` }} // stagger animation 🔥
+        >
+          
+          {/* Image */}
+          <div className="overflow-hidden aspect-[4/3]">
+            <img
+              src={s.img}
+              alt={s.title}
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            <h3 className="text-xl font-semibold">
+              {s.title}
+            </h3>
+
+            <p className="text-white/70 mt-3 leading-relaxed text-sm">
+              {s.text}
+            </p>
+
+            <span className="text-xs uppercase tracking-wider text-yellow-400 mt-5 inline-block cursor-pointer hover:underline">
+              Read story →
+            </span>
+          </div>
+
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+<section className="px-6 py-24 md:px-12 bg-gray-100">
+  <div className="mx-auto max-w-5xl">
+
+    {/* Heading */}
+    <div className="mb-16 text-center">
+      <p className="fade-up text-xs uppercase tracking-[0.3em] text-yellow-600">
+        Chronicle
+      </p>
+
+      <h2 className="fade-up fade-delay-1 text-4xl md:text-5xl font-semibold mt-2">
+        Events Timeline
+      </h2>
+    </div>
+
+    {/* Timeline */}
+    <div className="relative">
+
+      {/* Center Line */}
+      <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[2px] bg-yellow-300/50" />
+
+      {timeline.map((t, i) => (
+        <div
+          key={i}
+          className={`fade-up relative mb-14 flex flex-col md:flex-row items-start gap-6 ${
+            i % 2 ? "md:flex-row-reverse" : ""
+          }`}
+          style={{ animationDelay: `${i * 0.2}s` }} // stagger 🔥
+        >
+
+          {/* Dot */}
+          <div className="absolute left-4 md:left-1/2 -translate-x-1/2 h-3 w-3 rounded-full bg-yellow-500 ring-4 ring-white" />
+
+          {/* Image */}
+          <div className="md:w-1/2 pl-12 md:pl-0 md:px-8">
+            <img
+              src={t.img}
+              alt={t.title}
+              className="rounded-xl w-full aspect-[4/3] object-cover hover:scale-105 transition-transform duration-500"
+            />
+          </div>
+
+          {/* Content */}
+          <div className="md:w-1/2 pl-12 md:pl-0 md:px-8">
+            <p className="text-xs uppercase tracking-wider text-gray-500">
+              {t.date} · {t.loc}
+            </p>
+
+            <h3 className="text-2xl font-semibold mt-2">
+              {t.title}
+            </h3>
+
+            <p className="text-gray-600 mt-3">
+              A milestone moment for our community — captured, cherished and remembered.
+            </p>
+          </div>
+
+        </div>
+      ))}
+
+    </div>
+  </div>
+</section>
+<section className="px-6 py-24 md:px-12">
+  <div className="mx-auto max-w-7xl">
+
+    {/* Heading */}
+    <div className="mb-14 text-center">
+      <p className="fade-up text-xs uppercase tracking-[0.3em] text-yellow-600">
+        Numbers
+      </p>
+
+      <h2 className="fade-up fade-delay-1 text-4xl md:text-5xl font-semibold mt-2">
+        Impact in Frames
+      </h2>
+    </div>
+
+    {/* Stats Grid */}
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      {stats.map((s, i) => (
+        <div
+          key={i}
+          className="fade-up relative aspect-square overflow-hidden rounded-2xl group"
+          style={{ animationDelay: `${i * 0.2}s` }} // stagger animation 🔥
+        >
+
+          {/* Image */}
+          <img
+            src={s.img}
+            alt={s.label}
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+
+          {/* Content */}
+          <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+            <p className="text-3xl md:text-4xl font-bold text-yellow-400">
+              {s.n}
+            </p>
+
+            <p className="text-xs uppercase tracking-wider mt-1 text-white/80">
+              {s.label}
+            </p>
+          </div>
+
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+<section className="relative px-6 py-32 md:px-12 overflow-hidden">
+
+  {/* Background Image */}
+  <img
+    src={g5}
+    alt="cta"
+    className="absolute inset-0 h-full w-full object-cover scale-105 animate-zoomSlow"
+  />
+
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/80" />
+
+  {/* Content */}
+  <div className="relative max-w-3xl mx-auto text-center text-white">
+
+    <p className="fade-up text-xs uppercase tracking-[0.4em] text-yellow-400">
+      Together
+    </p>
+
+    <h2 className="fade-up fade-delay-1 text-4xl md:text-6xl mt-4 leading-tight font-bold">
+      Be part of <span className="text-yellow-400">our journey</span>.
+    </h2>
+
+    <p className="fade-up fade-delay-2 mt-6 text-white/80 text-lg">
+      Every helping hand writes the next chapter. Join us, donate, or volunteer — your story belongs here.
+    </p>
+
+    <div className="fade-up fade-delay-3 mt-10 flex flex-wrap gap-4 justify-center">
+      
+      <button className="px-8 py-4 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold hover:scale-105 transition-transform duration-300">
+        Donate Now
+      </button>
+
+      <button className="px-8 py-4 rounded-full border border-white/60 text-white font-semibold hover:bg-white hover:text-black transition-colors duration-300">
+        Join as Volunteer
+      </button>
+
+    </div>
+
+  </div>
+</section>
+
+
+
+    </main>
+  );
+}

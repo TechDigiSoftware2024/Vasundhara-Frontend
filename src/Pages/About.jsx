@@ -1,12 +1,21 @@
-import AboutContent from "../About/AboutContent";
+// import AboutContent from "../About/AboutContent";
 import AboutWorkSection from "../About/AboutWorkSection";
+
+
+
+import AboutSection from "./AboutSection";
 
 
 export default function About() {
   return(
     <>
-    <AboutContent/>
-    <AboutWorkSection/>
+   {/* <AboutContent/> */}
+   
+    
+    <AboutSection/>
+   
+     <AboutWorkSection/>
+     
     
     </>
   );

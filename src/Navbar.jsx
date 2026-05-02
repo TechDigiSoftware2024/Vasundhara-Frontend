@@ -10,6 +10,8 @@ const FALLBACK_WORK_ITEMS = [
   { id: "railway", title: "Railways", link: "/railway" },
   { id: "municipal", title: "Municipal Corporation", link: "/municipal-corporation" },
   { id: "bus-stand", title: "Bus Stand", link: "/bus-stand" },
+  { id: "gallery", title: "Bus Stand", link: "/gallery" },
+
 ];
 
 export default function Navbar() {
@@ -163,6 +165,7 @@ export default function Navbar() {
                   }`}
               />
             </div>
+
             {openMenu === "work" && (
               <ul className="absolute bg-white shadow-lg mt-2 rounded-lg p-2 w-56 z-10 border border-gray-100 max-h-80 overflow-y-auto">
                 {workLoading ? (
@@ -193,7 +196,11 @@ export default function Navbar() {
               </ul>
             )}
           </li>
-
+ <li>
+  <Link to="/gallery" className={linkClass("/gallery")}>
+    Gallery
+  </Link>
+</li>
           {/* Contact Us */}
           <li>
             <Link to="/contact-us" className={linkClass("/contact-us")}>

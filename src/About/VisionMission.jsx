@@ -113,7 +113,7 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
       letterSpacing: "2px",
     }}
   >
-   {apiData?.hero?.est }
+{apiData?.hero?.est}
   </div>
 
   {/* PURPOSE badge */}
@@ -163,15 +163,15 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
     transform: `translate(${tx}px, ${ty}px)`,
   }}
 >
-  {apiData?.hero?.line1 || "We build"}{" "}
+  {apiData?.line1 || "We build"}
   
   <span style={{ color: T.leaf, fontStyle: "italic" }}>
-    {apiData?.hero?.highlight || "tomorrow,"}
+    {apiData?.highlight || "tomorrow,"}
   </span>
 
   <br />
 
-  {apiData?.hero?.line2 || "one promise"}{" "}
+  {apiData?.line2 || "one promise"}{" "}
   
   <span
     style={{
@@ -180,7 +180,7 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
       color: "transparent",
     }}
   >
-    {apiData?.hero?.gradient || "at a time."}
+    {apiData?.gradient || "at a time."}
   </span>
 </h1>
 
@@ -193,7 +193,7 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
         lineHeight: 1.6,
       }}
     >
-     {apiData?.hero?.description}
+     {apiData?.description}
     </p>
 
     {/* Buttons */}
@@ -757,7 +757,7 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
           }}
         >
           <a
-            href="#"
+            href="/contact-us"
             style={{
               padding: "16px 34px",
               background: "#fff7eb",

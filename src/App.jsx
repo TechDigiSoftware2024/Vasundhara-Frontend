@@ -79,7 +79,7 @@ const router = createBrowserRouter([
           { path: "vision&mission", element: <VisionMission/> },
           
           { path: "our-work/:id", element: <OurWorkDetails /> },
-          // { path: "municipal-corporation", element: <MunicipalCorporation /> },
+           { path: "municipal-corporation", element: <MunicipalCorporation /> },
              { path: "railway", element: <Railway /> },
     { path: "bus-stand", element: <BusStand /> },
           { path: "vision-mission", element: <VisionMission /> },

@@ -104,7 +104,7 @@ export default function OurWorkDetails() {
 
         {/* Back Button */}
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/our-work")}
           className="absolute top-6 left-6 z-10 flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full hover:bg-white/30 transition"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -113,7 +113,7 @@ export default function OurWorkDetails() {
       </section>
 
       {/* Content Section - Cover Image & Title */}
-      <section className="container py-16 grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <section className="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left Image */}
         <div className="flex justify-center">
           <img
@@ -147,7 +147,7 @@ export default function OurWorkDetails() {
       {/* WHY Section */}
       {(data.whyTitle || data.whyDescription) && (
         <section className="bg-gray-50 py-16">
-          <div className="container">
+          <div className="max-w-7xl mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-extrabold text-green-900 mb-6">
               {data.whyTitle || "Why This Matters"}
             </h2>
@@ -161,7 +161,7 @@ export default function OurWorkDetails() {
       {/* WHAT WE DO Section */}
       {(data.whatTitle || data.whatDescription) && (
         <section className="py-16">
-          <div className="container grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left Text */}
             <div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-green-900 mb-6">
@@ -188,9 +188,11 @@ export default function OurWorkDetails() {
       )}
 
       {/* Solutions Section */}
-      {data.solutions && (data.solutions.title || data.solutions.description || data.computedSolutionsImages?.length > 0) && (
+      {data?.solutions?.title ||
+data?.solutions?.description ||
+data?.computedSolutionsImages?.length > 0 && (
         <section className="bg-gray-50 py-16 px-4 md:px-10">
-          <div className="container mx-auto flex flex-col md:flex-row items-start gap-10">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-start gap-10">
             {/* Left Text Section */}
             <div className="md:w-2/3">
               <h2 className="text-3xl font-bold text-green-900 mb-6">
@@ -224,7 +226,7 @@ export default function OurWorkDetails() {
       {/* Image Gallery Section */}
       {data.computedGalleryImages?.length > 0 && (
         <section className="bg-white py-16">
-          <div className="container mx-auto px-4">
+          <div className="max-w-7xl  mx-auto px-4">
             {/* Heading */}
             <h2 className="text-3xl md:text-4xl font-bold text-green-900 text-center mb-12">
               Image Gallery
@@ -254,7 +256,7 @@ export default function OurWorkDetails() {
 
       {/* CTA Section */}
       <section className="bg-green-900 py-16">
-        <div className="container text-center">
+        <div className="max-w-7xl mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
             Want to Learn More?
           </h2>

@@ -174,20 +174,32 @@ export default function Navbar() {
                     <span className="ml-2 text-sm text-gray-500">Loading...</span>
                   </li>
                 ) : workItems.length > 0 ? (
-                  workItems.map((item) => (
-                    <li key={item.id}>
-                      <Link
-                        to={item.link}
-                        className={`block w-full p-2 hover:bg-green-50 hover:text-green-600 rounded transition ${location.pathname === item.link
-                            ? "bg-green-50 text-green-700 font-medium"
-                            : ""
-                          }`}
-                        onClick={() => setOpenMenu(null)}
-                      >
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))
+                workItems.map((item) => {
+  let route = `/our-work/${item.id}`;
+  const title = item.title.toLowerCase();
+
+  if (title.includes("railway")) route = "/railway";
+  else if (title.includes("bus")) route = "/bus-stand";
+  else if (title.includes("municipal") || title.includes("nagar")) {
+    route = "/municipal-corporation";
+  }
+
+  return (
+    <li key={item.id}>
+      <Link
+        to={route}
+        className={`block w-full p-2 hover:bg-green-50 hover:text-green-600 rounded transition ${
+          location.pathname === route
+            ? "bg-green-50 text-green-700 font-medium"
+            : ""
+        }`}
+        onClick={() => setOpenMenu(null)}
+      >
+        {item.title}
+      </Link>
+    </li>
+  );
+})
                 ) : (
                   <li className="p-2 text-gray-500 text-sm text-center">
                     No items found

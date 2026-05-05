@@ -67,7 +67,7 @@ const [featured, setFeatured] = useState([
 
   const [stats, setStats] = useState([
     { img: g11, n: "1000+", label: "Trees Planted" },
-    { img: toilet, n: "10+", label: "Public Toilets Built" },
+    { img: toilet, n: "1000+", label: "Public Toilets Built" },
     { img: g12, n: "1 k+", label: "Meals Served" },
     { img: g13, n: "50", label: "Health Camps" },
   ]);
@@ -256,13 +256,13 @@ const [featured, setFeatured] = useState([
 <div className="grid md:grid-cols-2 gap-10">
   {[
     {
-      name: "Rohit Sharma",
-      msg: "Rohit has been consistently supporting our NGO by contributing donations and actively participating in our social initiatives. His dedication towards helping the underprivileged has made a real difference in many lives. He believes that even small efforts can bring big change, and his actions truly reflect that. We are thankful for his kindness and ongoing support.",
+      name: "Virendra Kumar Singh",
+      msg: "Virendra Kumar Singh has been consistently supporting our NGO by contributing donations and actively participating in our social initiatives. His dedication towards helping the underprivileged has made a real difference in many lives. He believes that even small efforts can bring big change, and his actions truly reflect that. We are thankful for his kindness and ongoing support.",
       img: "../../Vasundhara-Backend/public/newimg/sp2.jpeg",
     },
     {
-      name: "Priya Verma",
-      msg: "Priya has always shown great compassion towards people in need. Through her generous donations and involvement in our activities, she has helped us extend our reach to more communities. Her positive attitude and willingness to support every cause inspire others as well. We truly appreciate her valuable contribution and heartfelt support.",
+      name: "Aditya Raj",
+      msg: "Aditya Raj has always shown great compassion towards people in need. Through her generous donations and involvement in our activities, she has helped us extend our reach to more communities. Her positive attitude and willingness to support every cause inspire others as well. We truly appreciate her valuable contribution and heartfelt support.",
       img: "../../Vasundhara-Backend/public/newimg/sp1.jpeg",
     },
   ].map((person, i) => (

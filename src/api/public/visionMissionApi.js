@@ -196,10 +196,10 @@ export const getVisionMissionPageData = async () => {
             success: true,
             data: {
                 hero: heroResult.success ? heroResult.data : null,
-                vision: visionItems,
-                mission: missionItems,
-                goals: goalsItems,
-                values: valuesItems,
+                vision: visionItems[0] || null,
+mission: missionItems[0] || null,
+goals: goalsItems[0] || null,
+values: valuesItems[0] || null,
                 allItems: items,
             },
         };

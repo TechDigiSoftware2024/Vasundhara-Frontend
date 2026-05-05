@@ -10,6 +10,9 @@ const FALLBACK_WORK_ITEMS = [
   { id: "railway", title: "Railways", link: "/railway" },
   { id: "municipal", title: "Municipal Corporation", link: "/municipal-corporation" },
   { id: "bus-stand", title: "Bus Stand", link: "/bus-stand" },
+  { id: "gallery", title: "Bus Stand", link: "/gallery" },
+  { id: "our-work", title: "our work", link: "/our-work" },
+
 ];
 
 export default function Navbar() {
@@ -147,53 +150,16 @@ export default function Navbar() {
             )}
           </li>
 
-          {/* Our Work dropdown - Dynamic from API */}
-          <li className="relative">
-            <div
-              className={`relative cursor-pointer flex items-center gap-1 px-2 py-1 transition ${isOurWorkActive
-                  ? "text-green-700 font-semibold"
-                  : "hover:text-green-800"
-                }`}
-              onClick={() => toggleMenu("work")}
-            >
-              <span>Our Work</span>
-              <ChevronDown
-                size={16}
-                className={`transition-transform duration-200 ${openMenu === "work" ? "rotate-180" : ""
-                  }`}
-              />
-            </div>
-            {openMenu === "work" && (
-              <ul className="absolute bg-white shadow-lg mt-2 rounded-lg p-2 w-56 z-10 border border-gray-100 max-h-80 overflow-y-auto">
-                {workLoading ? (
-                  <li className="flex items-center justify-center p-4">
-                    <Loader2 className="w-5 h-5 text-green-600 animate-spin" />
-                    <span className="ml-2 text-sm text-gray-500">Loading...</span>
-                  </li>
-                ) : workItems.length > 0 ? (
-                  workItems.map((item) => (
-                    <li key={item.id}>
-                      <Link
-                        to={item.link}
-                        className={`block w-full p-2 hover:bg-green-50 hover:text-green-600 rounded transition ${location.pathname === item.link
-                            ? "bg-green-50 text-green-700 font-medium"
-                            : ""
-                          }`}
-                        onClick={() => setOpenMenu(null)}
-                      >
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))
-                ) : (
-                  <li className="p-2 text-gray-500 text-sm text-center">
-                    No items found
-                  </li>
-                )}
-              </ul>
-            )}
-          </li>
-
+       <li>
+  <Link to="/our-work" className={linkClass("/our-work")}>
+    Our Work
+  </Link>
+</li>
+ <li>
+  <Link to="/gallery" className={linkClass("/gallery")}>
+    Gallery
+  </Link>
+</li>
           {/* Contact Us */}
           <li>
             <Link to="/contact-us" className={linkClass("/contact-us")}>
@@ -273,50 +239,17 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Our Work Mobile Dropdown - Dynamic from API */}
-          <div>
-            <button
-              className={`flex justify-between items-center w-full font-semibold p-2 rounded transition ${isOurWorkActive
-                  ? "text-green-700 bg-green-50"
-                  : "text-green-900 hover:bg-green-50"
-                }`}
-              onClick={() => toggleMobileDropdown("work")}
-            >
-              <span>Our Work</span>
-              <ChevronDown
-                size={16}
-                className={`transition-transform duration-200 ${mobileDropdown === "work" ? "rotate-180" : ""
-                  }`}
-              />
-            </button>
-            {mobileDropdown === "work" && (
-              <ul className="mt-2 ml-4 space-y-1 border-l-2 border-green-200 pl-4">
-                {workLoading ? (
-                  <li className="flex items-center p-2">
-                    <Loader2 className="w-4 h-4 text-green-600 animate-spin" />
-                    <span className="ml-2 text-sm text-gray-500">Loading...</span>
-                  </li>
-                ) : workItems.length > 0 ? (
-                  workItems.map((item) => (
-                    <li key={item.id}>
-                      <Link
-                        to={item.link}
-                        className={`block p-2 rounded transition ${location.pathname === item.link
-                            ? "text-green-700 bg-green-50 font-medium"
-                            : "hover:bg-green-50"
-                          }`}
-                        onClick={() => setMobileMenu(false)}
-                      >
-                        {item.title}
-                      </Link>
-                    </li>
-                  ))
-                ) : (
-                  <li className="p-2 text-gray-500 text-sm">No items found</li>
-                )}
-              </ul>
-            )}
-          </div>
+        <Link
+  to="/municipal-corporation"
+  className={`block p-2 font-semibold rounded transition ${
+    location.pathname === "/municipal-corporation"
+      ? "text-green-700 bg-green-50"
+      : "text-green-900 hover:bg-green-50"
+  }`}
+  onClick={() => setMobileMenu(false)}
+>
+  Our Work
+</Link>
 
           {/* Contact Us */}
           <Link

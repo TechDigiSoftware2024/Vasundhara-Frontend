@@ -11,15 +11,14 @@ import {
 // Public Layout & Pages
 import Layout from "./Layout/Layout";
 import Home from "./Pages/Home";
-import About from "./Pages/About";
-import OurWorkDetails from "./OurWork/OurWorkDetails";
+
 import MunicipalCorporation from "./OurWork/MunicipalCorporation";
 import BusStand from "./OurWork/BusStand";
 import Railway from "./OurWork/Railway";
 import VisionMission from "./About/VisionMission";
 import Team from "./About/Team";
 import ContactUs from "./Pages/ContactUs";
-
+import Gallery from "./Pages/Gallery"
 // Admin Imports
 import AdminLayout from "./Pages/Layout/AdminLayout";
 import Dashboard from "./AdminPannel/Components/Dashboard";
@@ -44,7 +43,11 @@ import ForgotPassword from "./AdminPannel/Components/ForgotPassword";
 import ResetPassword from "./AdminPannel/Components/ResetPassword";
 import ChangePassword from "./AdminPannel/Components/ChangePassword";
 import PrivacyPolicy from "./PrivacyPolicy";
+import { AboutMain } from "./Pages/AboutMain";
 
+import Vision from "./About/VisionMission";
+import About from "./Pages/About";
+import OurWork from "./OurWork/OurWork";
 // Root layout that provides context to all routes
 const RootLayout = () => {
   return (
@@ -68,25 +71,32 @@ const router = createBrowserRouter([
         errorElement: <NotFoundPage />,
         children: [
           { index: true, element: <Home /> },
-          { path: "about", element: <About /> },
-          { path: "our-work/:id", element: <OurWorkDetails /> },
-          // { path: "municipal-corporation", element: <MunicipalCorporation /> },
-          { path: "bus-stand", element: <BusStand /> },
-          { path: "railway", element: <Railway /> },
+          { path: "about", element: <About/> },
+             
+          { path: "gallery", element: <Gallery/> },
+
+          
+          { path: "vision&mission", element: <VisionMission/> },
+          
+          
+           { path: "municipal-corporation", element: <MunicipalCorporation /> },
+             { path: "railway", element: <Railway /> },
+    { path: "bus-stand", element: <BusStand /> },
           { path: "vision-mission", element: <VisionMission /> },
           { path: "team", element: <Team /> },
           { path: "contact-us", element: <ContactUs /> },
           {path:"privacy-policy",element:<PrivacyPolicy/>},
+           {path:"our-work",element:<OurWork/>},
         ],
       },
 
-      // 🔐 Auth Routes
+     
       { path: "/login", element: <Login /> },
       { path: "/forgot-password", element: <ForgotPassword /> },
       { path: "/reset-password", element: <ResetPassword /> },
       { path: "/unauthorized", element: <UnauthorizedPage /> },
 
-      // 🔒 Admin Routes (Protected)
+  
       {
         path: "/admin",
         element: <AdminLayout />,

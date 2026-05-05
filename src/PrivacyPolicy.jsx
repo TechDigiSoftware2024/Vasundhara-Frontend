@@ -561,9 +561,10 @@ const PrivacyPolicy = () => {
                                         <ChevronRight className="w-4 h-4" />
                                     </Link>
                                     <Link
-                                        to="/terms"
-                                        className="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
-                                    >
+  
+  onClick={scrollToTop}
+  className="inline-flex items-center gap-2 bg-white/10 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-colors"
+>
                                         Terms of Service
                                         <ChevronRight className="w-4 h-4" />
                                     </Link>

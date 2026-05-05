@@ -82,12 +82,6 @@ const [featured, setFeatured] = useState([
 
         if (d.heroSlides?.length) setSlides(d.heroSlides);
 
-        if (d.beforeAfter) {
-          setBeforeAfter({
-            before: d.beforeAfter.before || g1,
-            after: d.beforeAfter.after || g6,
-          });
-        }
 
         if (d.featured?.length) {
           setFeatured(
@@ -99,15 +93,7 @@ const [featured, setFeatured] = useState([
           );
         }
 
-        if (d.stories?.length) {
-          setStories(
-            d.stories.map((s) => ({
-              img: s.computedImageUrl,
-              title: s.title,
-              text: s.text,
-            }))
-          );
-        }
+    
 
         if (d.timeline?.length) {
           setTimeline(

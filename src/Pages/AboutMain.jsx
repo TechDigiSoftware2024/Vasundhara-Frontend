@@ -82,7 +82,7 @@ export const AboutMain = () => {
 
             <div className="absolute bottom-4 right-4 bg-white shadow-lg rounded-2xl p-4">
               <p className="text-sm font-semibold text-emerald-600">
-                25+ Years Service
+                26+ Years Service
               </p>
             </div>
           </div>

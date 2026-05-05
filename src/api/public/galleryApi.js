@@ -21,7 +21,9 @@ export const getGalleryData = async () => {
     console.log("GALLERY API RAW:", raw);
 
     const data = {
-  heroSlides: (raw.heroSlides || []).map((img) => img),
+heroSlides: (raw.heroSlides || []).map((img) =>
+  IMAGES.url(img)
+),
 
   beforeAfter: {
     before: IMAGES.url(raw?.beforeAfter?.before),

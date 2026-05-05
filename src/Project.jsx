@@ -13,11 +13,11 @@ const projects = [
   { img: hygiene, title: "Schools Hygiene Program", category: "Welfare", location: "Vidisha, MP", year: "2023", desc: "Handwashing stations, sanitary infrastructure and hygiene workshops in 120+ government schools." },
 ];
 
-const categories = ["All", "Sanitation", "Plantation", "Waste", "Welfare"];
+
 
 export const Projects = () => {
   const ref = useReveal(); // ✅ fixed
-  const [filter, setFilter] = useState("All");
+  const [filter, ] = useState("All");
 
 const visible = projects.filter(                                                              
   (p) =>
@@ -45,21 +45,7 @@ const visible = projects.filter(
 
 
 
-          <div className="reveal flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <button
-                key={c}
-                onClick={() => setFilter(c.trim())}
-                className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
-                  filter === c
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-background text-foreground border-border hover:border-primary"
-                }`}
-              >
-                {c}
-              </button>
-            ))}
-          </div>
+          
         </div>
 
         <div className="mt-12 grid md:grid-cols-2 gap-6 md:gap-8">
@@ -101,12 +87,7 @@ const visible = projects.filter(
                   {p.desc}
                 </p>
 
-                <a
-                  href="#contact"
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all"
-                >
-                  Read case study <ArrowRight className="h-4 w-4" />
-                </a>
+               
               </div>
             </article>
           ))}

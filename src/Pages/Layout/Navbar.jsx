@@ -32,7 +32,7 @@ function useOutsideAlerter(ref, callback) {
 }
 
 export default function Navbar() {
-  const [searchQuery, setSearchQuery] = useState("");
+
   const [isNotificationOpen, setNotificationOpen] = useState(false);
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -76,15 +76,6 @@ export default function Navbar() {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) {
-      toast.warning("Please enter a search term");
-      return;
-    }
-    toast.info(`Searching for: ${searchQuery}`);
-    setSearchQuery("");
-  };
 
   const handleConfirmLogout = async () => {
     setIsLoggingOut(true);
@@ -137,14 +128,14 @@ export default function Navbar() {
 
         {/* Right: Search + Icons */}
         <div className="flex items-center gap-2 lg:gap-6">
-          {/* Search - Hidden on mobile */}
+         
 
 
           {/* Mobile Search Button */}
 
 
           {/* Notifications */}
-          {/* <div className="relative" ref={notificationRef}>
+         <div className="relative" ref={notificationRef}>
             <button
               onClick={() => setNotificationOpen(!isNotificationOpen)}
               className="relative p-2 text-gray-600 hover:text-blue-600 transition rounded-lg hover:bg-gray-100"
@@ -230,7 +221,7 @@ export default function Navbar() {
                 </div>
               </div>
             )}
-          </div> */}
+          </div>
 
           {/* User Dropdown */}
           <div className="relative" ref={userMenuRef}>

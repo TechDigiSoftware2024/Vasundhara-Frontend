@@ -8,6 +8,7 @@ const T = {
   rose: "#D63384",
   plum: "#5B2A86",
   leaf: "#1F6F4A",
+  sky:"#4D150A"
 };
 const container= {
   width: "100%",
@@ -94,49 +95,7 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
     overflow: "hidden",
   }}
 >
-  {/* EST badge */}
-  <div
-    style={{
-      position: "absolute",
-      top: "10%",
-      right: "5%",
-      width: 70,
-      height: 70,
-      borderRadius: "50%",
-      background: T.accent,
-      color: "#fff",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 10,
-      fontWeight: 600,
-      letterSpacing: "2px",
-    }}
-  >
-{apiData?.hero?.est}
-  </div>
 
-  {/* PURPOSE badge */}
-  <div
-    style={{
-      position: "absolute",
-      bottom: "5%",
-      left: "5%",
-      width: 80,
-      height: 80,
-      borderRadius: "50%",
-      background: "green",
-      color: "#fff",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 10,
-      fontWeight: 600,
-      letterSpacing: "1px",
-    }}
-  >
-    PURPOSE-LED
-  </div>
 
   <div
     style={{
@@ -237,13 +196,13 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
         marginTop: 60,
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-        gap: 16,
+        gap: 20,
       }}
     >
       {(apiData?.stats || [
-  { n: "120K+", l: "Lives touched" },
-  { n: "47", l: "Communities" },
-  { n: "15 yrs", l: "On ground" },
+  { n: "10k+", l: "Lives touched" },
+  { n: "10+", l: "Communities" },
+  { n: "26 yrs", l: "On ground" },
   { n: "98%", l: "Funds to programs" },
 ]).map((s, i) => (
         <div
@@ -320,8 +279,10 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
           style={{
             display: "flex",
             whiteSpace: "nowrap",
-            gap: 50,
-            animation: "scrollX 20s linear infinite",
+            gap: 80,
+           animation: "scrollX 30s linear infinite",
+transform: "translateX(100%)",
+ width: "max-content",
           }}
         >
           {[...words, ...words].map((w, i) => (
@@ -341,10 +302,10 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
         {/* ANIMATION */}
         <style>
           {`
-            @keyframes scrollX {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
+           @keyframes scrollX {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
 
             @keyframes floatY {
               0%, 100% { transform: translateY(-50%) translateY(0px); }

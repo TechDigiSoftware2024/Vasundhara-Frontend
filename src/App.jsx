@@ -12,7 +12,6 @@ import {
 import Layout from "./Layout/Layout";
 import Home from "./Pages/Home";
 
-import OurWorkDetails from "./OurWork/OurWorkDetails";
 import MunicipalCorporation from "./OurWork/MunicipalCorporation";
 import BusStand from "./OurWork/BusStand";
 import Railway from "./OurWork/Railway";
@@ -48,6 +47,7 @@ import { AboutMain } from "./Pages/AboutMain";
 
 import Vision from "./About/VisionMission";
 import About from "./Pages/About";
+import OurWork from "./OurWork/OurWork";
 // Root layout that provides context to all routes
 const RootLayout = () => {
   return (
@@ -78,7 +78,7 @@ const router = createBrowserRouter([
           
           { path: "vision&mission", element: <VisionMission/> },
           
-          { path: "our-work/:id", element: <OurWorkDetails /> },
+          
            { path: "municipal-corporation", element: <MunicipalCorporation /> },
              { path: "railway", element: <Railway /> },
     { path: "bus-stand", element: <BusStand /> },
@@ -86,6 +86,7 @@ const router = createBrowserRouter([
           { path: "team", element: <Team /> },
           { path: "contact-us", element: <ContactUs /> },
           {path:"privacy-policy",element:<PrivacyPolicy/>},
+           {path:"our-work",element:<OurWork/>},
         ],
       },
 

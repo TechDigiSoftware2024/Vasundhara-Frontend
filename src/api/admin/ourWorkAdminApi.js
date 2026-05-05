@@ -126,11 +126,7 @@ const transformOurWorkItem = (item) => {
             title: item.whatTitle || '',
             description: item.whatDescription || '',
             image: getImageUrl(item.whatImageUrl, item.whatUseUpload),
-        },
-        solutionsSection: {
-            title: solutions.title,
-            description: solutions.description,
-            images: solutions.images.map((img) => IMAGES.url(img.imageUrl)),
+       
         },
         gallerySection: {
             title: 'Image Gallery',

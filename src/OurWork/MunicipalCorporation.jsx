@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import BusStand from "./BusStand";
+import Railway from "./Railway";
 
 const images = [
   "https://gmc.assam.gov.in/sites/default/files/styles/inner_page_image_380x238/public/swf_utility_folder/departments/gmc_webcomindia_org_oid_5/portlet/level_1/image/fogging.jpg?itok=RTMGPX8H",
@@ -16,6 +18,8 @@ const images = [
 export default function MunicipalCorporation() {
   return (
     <div className="bg-white">
+     
+      
       {/* Hero Section with Centered Text */}
       <section
         className="relative h-[400px] flex items-center justify-center text-center"

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { getGalleryData } from "../api/public/galleryApi";
 import { IMAGES } from "../utils/constants";
+import { Link } from "react-router-dom";
+
 
 // fallback images
 import g1 from "../../../Vasundhara-Backend/public/newimg/gallery1.jpg";
@@ -9,7 +11,16 @@ import g3 from "../../../Vasundhara-Backend/public/newimg/gallery3.jpg";
 import g4 from "../../../Vasundhara-Backend/public/newimg/gallery4.jpg";
 import g5 from "../../../Vasundhara-Backend/public/newimg/gallery5.jpg";
 import g6 from "../../../Vasundhara-Backend/public/newimg/gallery6.jpg";
-
+import s1 from "../../Vasundhara-Backend/public/newimg/s1.png";
+import { Toilet } from "lucide-react";
+const toilet="../Vasundhara-Backend/public/newimg/s4.jpeg"
+const g7 = "https://cdn.prod.website-files.com/66a10dc6b207d3968468500a/676d088c1566d42473e94869_Reforestation-%E2%80%93-Is-It-Actually-Important.webp";
+const g8 = "../../Vasundhara-Backend/public/newimg/s5.jpeg";
+const g9 = "https://images.timesnowhindi.com/thumb/msid-153166145,thumbsize-89998,width-400,height-225,resizemode-75/153166145.jpg";
+const g10 = "https://s.observers.france24.com/media/display/1d31b76e-f734-11ea-bdb6-005056a9aa4d/w:1024/p:16x9/trash%20bag.JPG";
+const g11 = "https://images.unsplash.com/photo-1593113598332-cd288d649433";
+const g12 = "https://images.unsplash.com/photo-1606787366850-de6330128bfc";
+const g13="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhOSMnzx5pWu4pj16ijslb2QbmSpy0NYZndA&s"
 export default function Gallery() {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(null);
@@ -21,36 +32,44 @@ export default function Gallery() {
   // ✅ DEFAULT STATIC (fallback)
   const [slides, setSlides] = useState([g1, g2, g3, g4, g5]);
 
-  const [beforeAfter, setBeforeAfter] = useState({
-    before: g1,
-    after: g6,
-  });
 
-  const [featured, setFeatured] = useState([
-    { src: g1, title: "Green Mission 2025", tag: "Reforestation" },
-    { src: g2, title: "Light of Learning", tag: "Education" },
-    { src: g3, title: "Meals of Hope", tag: "Food Drive" },
-    { src: g4, title: "Healing Hands Camp", tag: "Healthcare" },
-  ]);
 
-  const [stories, setStories] = useState([
-    { img: g2, title: "Aarav's First Book", text: "From street corners to classrooms — one boy, one book, a brand new life." },
-    { img: g3, title: "A Warm Meal", text: "Hunger has no holiday. Every plate served is a promise kept." },
-    { img: g5, title: "United We Rise", text: "Strangers became family the moment they joined hands." },
-  ]);
+const [featured, setFeatured] = useState([
+  {
+    src: g7,
+    title: "Green Mission 2025",
+    tag: "Reforestation",
+  },
+  {
+    src: g8,
+    title: "Public Toilet & Bathing Facility",
+    tag: "Sanitation",
+  },
+  {
+    src: g9,
+    title: "Support to Nagar Nigam Bhopal",
+    tag: "Urban Support",
+  },
+  {
+    src: g10,
+    title: "Street Cleaning Drive",
+    tag: "Cleanliness Drive",
+  },
+]);
+
 
   const [timeline, setTimeline] = useState([
-    { date: "Mar 2025", loc: "Jaipur, IN", title: "Tree Plantation Drive", img: g1 },
-    { date: "Jan 2025", loc: "Delhi, IN", title: "Winter Food Drive", img: g3 },
-    { date: "Nov 2024", loc: "Pune, IN", title: "Free Health Camp", img: g4 },
-    { date: "Aug 2024", loc: "Mumbai, IN", title: "School Reopening", img: g2 },
+    { date: "Mar 2025", loc: "Bhopal, IN", title: "Tree Plantation Drive", img: g1 },
+    { date: "Jan 2025", loc: "Bhopal, IN", title: "Winter Food Drive", img: g3 },
+    { date: "Nov 2024", loc: "Bhopal, IN", title: "Free Health Camp", img: g4 },
+    { date: "Aug 2024", loc: "Bhopal, IN", title: "Public Toilet and Bathing Facility", img: s1 },
   ]);
 
   const [stats, setStats] = useState([
-    { img: g1, n: "1,00,000+", label: "Trees Planted" },
-    { img: g2, n: "12,500", label: "Children Educated" },
-    { img: g3, n: "3 Lakh+", label: "Meals Served" },
-    { img: g4, n: "850", label: "Health Camps" },
+    { img: g11, n: "1000+", label: "Trees Planted" },
+    { img: toilet, n: "10+", label: "Public Toilets Built" },
+    { img: g12, n: "1 k+", label: "Meals Served" },
+    { img: g13, n: "50", label: "Health Camps" },
   ]);
 
   // ✅ API INTEGRATION (WITHOUT BREAKING UI)
@@ -161,7 +180,7 @@ export default function Gallery() {
             className="absolute inset-0 transition-opacity duration-1000"
             style={{ opacity: i === active ? 1 : 0 }}
           >
-            <img src={IMAGES.url(s)} className="h-full w-full object-cover" />
+                <img src={s} className="h-full w-full object-cover" />
           </div>
         ))}
         <div className="absolute inset-0 bg-black/50" />
@@ -173,20 +192,7 @@ export default function Gallery() {
         </div>
       </section>
 
-      {/* BEFORE AFTER (UNCHANGED) */}
-      <section className="p-10">
-        <div
-          ref={sliderRef}
-          className="relative w-full h-[400px] overflow-hidden cursor-ew-resize"
-          onMouseMove={(e) => e.buttons === 1 && onDrag(e)}
-          onTouchMove={onDrag}
-        >
-          <img src={beforeAfter.after} className="absolute w-full h-full object-cover" />
-          <div className="absolute top-0 left-0 h-full overflow-hidden" style={{ width: `${reveal}%` }}>
-            <img src={beforeAfter.before} className="w-full h-full object-cover" />
-          </div>
-        </div>
-      </section>
+   
 
   
      {/* LIGHTBOX */}
@@ -199,7 +205,7 @@ export default function Gallery() {
         </div>
       )}
       {/* ===== 2. HIGHLIGHT SHOWCASE ===== */}
-<section className="px-6 py-24 md:px-12">
+<section className="px-6 py-10 md:px-12">
   <div className="mx-auto max-w-7xl">
     
     <div className="mb-12 flex items-end justify-between">
@@ -245,60 +251,65 @@ export default function Gallery() {
 
   </div>
 </section>
-<section className="px-6 py-24 md:px-12 bg-gray-900 text-white">
+<section className="px-6 py-10 md:px-12 bg-gray-900 text-white">
   <div className="mx-auto max-w-7xl">
 
     {/* Heading */}
-    <div className="mb-14 text-center">
-      <p className="fade-up text-xs uppercase tracking-[0.3em] text-yellow-400">
-        Untold
+  
+
+{/* Supporters Section */}
+<div className="text-center mb-12">
+  <h2 className="text-3xl font-bold text-white">
+    Our Kind Hearts💚
+  </h2>
+  <p className="text-gray-300 mt-3 text-sm max-w-2xl mx-auto">
+    We are deeply grateful to these kind-hearted individuals who have supported our mission with their generosity, time, and compassion. Their continuous efforts inspire us to do more and reach those who truly need help.
+  </p>
+</div>
+
+<div className="grid md:grid-cols-2 gap-10">
+  {[
+    {
+      name: "Rohit Sharma",
+      msg: "Rohit has been consistently supporting our NGO by contributing donations and actively participating in our social initiatives. His dedication towards helping the underprivileged has made a real difference in many lives. He believes that even small efforts can bring big change, and his actions truly reflect that. We are thankful for his kindness and ongoing support.",
+      img: "../../Vasundhara-Backend/public/newimg/sp2.jpeg",
+    },
+    {
+      name: "Priya Verma",
+      msg: "Priya has always shown great compassion towards people in need. Through her generous donations and involvement in our activities, she has helped us extend our reach to more communities. Her positive attitude and willingness to support every cause inspire others as well. We truly appreciate her valuable contribution and heartfelt support.",
+      img: "../../Vasundhara-Backend/public/newimg/sp1.jpeg",
+    },
+  ].map((person, i) => (
+    <div
+      key={i}
+      className="group rounded-2xl p-6 bg-white/5 border border-white/10 backdrop-blur-sm hover:-translate-y-2 transition-all duration-500"
+    >
+      {/* Image */}
+      <div className="w-32 h-32 mx-auto mb-5 overflow-hidden rounded-full border-2 border-green-400">
+        <img
+          src={person.img}
+          alt={person.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+      </div>
+
+      {/* Content */}
+      <h3 className="text-xl text-center font-semibold text-white">
+        {person.name}
+      </h3>
+
+      <p className="text-gray-300 text-sm mt-4 text-center leading-relaxed">
+        {person.msg}
       </p>
-
-      <h2 className="fade-up fade-delay-1 text-4xl md:text-5xl font-semibold mt-2">
-        Stories Behind Photos
-      </h2>
     </div>
+  ))}
+</div>
 
-    {/* Cards */}
-    <div className="grid md:grid-cols-3 gap-8">
-      {stories.map((s, i) => (
-        <article
-          key={i}
-          className="fade-up group rounded-2xl overflow-hidden bg-white/5 border border-white/10 backdrop-blur-sm hover:-translate-y-2 transition-all duration-500"
-          style={{ animationDelay: `${i * 0.2}s` }} // stagger animation 🔥
-        >
-          
-          {/* Image */}
-          <div className="overflow-hidden aspect-[4/3]">
-            <img
-              src={s.img}
-              alt={s.title}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-          </div>
 
-          {/* Content */}
-          <div className="p-6">
-            <h3 className="text-xl font-semibold">
-              {s.title}
-            </h3>
-
-            <p className="text-white/70 mt-3 leading-relaxed text-sm">
-              {s.text}
-            </p>
-
-            <span className="text-xs uppercase tracking-wider text-yellow-400 mt-5 inline-block cursor-pointer hover:underline">
-              Read story →
-            </span>
-          </div>
-
-        </article>
-      ))}
-    </div>
 
   </div>
 </section>
-<section className="px-6 py-24 md:px-12 bg-gray-100">
+<section className="px-6 py-10 md:px-12 bg-gray-100">
   <div className="mx-auto max-w-5xl">
 
     {/* Heading */}
@@ -360,14 +371,12 @@ export default function Gallery() {
     </div>
   </div>
 </section>
-<section className="px-6 py-24 md:px-12">
+<section className="px-6 py-2 md:px-12">
   <div className="mx-auto max-w-7xl">
 
     {/* Heading */}
-    <div className="mb-14 text-center">
-      <p className="fade-up text-xs uppercase tracking-[0.3em] text-yellow-600">
-        Numbers
-      </p>
+    <div className="mb-10 text-center">
+      
 
       <h2 className="fade-up fade-delay-1 text-4xl md:text-5xl font-semibold mt-2">
         Impact in Frames
@@ -410,7 +419,7 @@ export default function Gallery() {
 
   </div>
 </section>
-<section className="relative px-6 py-32 md:px-12 overflow-hidden">
+<section className="relative px-6 py-10 mt-10 md:px-12 overflow-hidden">
 
   {/* Background Image */}
   <img
@@ -439,14 +448,19 @@ export default function Gallery() {
 
     <div className="fade-up fade-delay-3 mt-10 flex flex-wrap gap-4 justify-center">
       
-      <button className="px-8 py-4 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold hover:scale-105 transition-transform duration-300">
-        Donate Now
-      </button>
+  <Link
+    to="/contact-us"
+    className="px-8 py-4 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-black font-semibold hover:scale-105 transition-transform duration-300 inline-block"
+  >
+    Donate Now
+  </Link>
 
-      <button className="px-8 py-4 rounded-full border border-white/60 text-white font-semibold hover:bg-white hover:text-black transition-colors duration-300">
-        Join as Volunteer
-      </button>
-
+  <Link
+    to="/contact-us"
+    className="px-8 py-4 rounded-full border border-white/60 text-white font-semibold hover:bg-white hover:text-black transition-colors duration-300 inline-block"
+  >
+    Join as Volunteer
+  </Link>
     </div>
 
   </div>

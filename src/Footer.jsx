@@ -62,12 +62,12 @@ export default function Footer() {
 
         if (result.success && result.data?.length > 0) {
           // Transform API data to include proper links
-          const transformedItems = result.data.map(item => ({
-            id: item.id || item._id,
-            title: item.title,
-            link: `/our-work/${item.id || item._id}`,
-            image: item.computedImageUrl || IMAGES.url(item.coverImageUrl),
-          }));
+         const transformedItems = result.data.map(item => ({
+  id: item.id || item._id,
+  title: item.title,
+  link: "/our-work",
+  image: item.computedImageUrl || IMAGES.url(item.coverImageUrl),
+}));
           setWorkItems(transformedItems);
         } else {
           setWorkItems(FALLBACK_WORK_ITEMS);

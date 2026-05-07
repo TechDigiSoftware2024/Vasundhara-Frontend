@@ -17,6 +17,7 @@ import {
   Instagram,
   Linkedin,
   Youtube,
+ 
   Building2,
 } from "lucide-react";
 import { submitInquiry } from "../api/public/inquiriesApi";
@@ -37,7 +38,7 @@ const contactSchema = yup.object().shape({
     .string()
     .required("Phone number is required")
     .matches(
-      /^(\+91[\-\s]?)?[0]?(91)?[6789]\d{9}$/,
+      /^(\+91[-\s]?)?[0]?(91)?[6789]\d{9}$/,
       "Please enter a valid Indian phone number"
     ),
   city: yup
@@ -75,7 +76,7 @@ const DEFAULT_CONTACT = {
 
 // Contact Info Card Component
 function ContactCard({ icon: Icon, title, content, href, isLoading }) {
-  const CardWrapper = href ? 'a' : 'div';
+    const CardWrapper = href ? 'a' : 'div';
   const cardProps = href ? {
     href,
     target: href.startsWith('http') ? '_blank' : undefined,
@@ -103,7 +104,7 @@ function ContactCard({ icon: Icon, title, content, href, isLoading }) {
 }
 
 // Social Link Button Component
-function SocialButton({ icon: Icon, href, label }) {
+function SocialButton({ icon:  href, label }) {
   if (!href) return null;
 
   return (
@@ -213,7 +214,7 @@ export default function ContactPage() {
 
   // Format phone number for tel: link
   const getPhoneLink = (phone) => {
-    const cleanPhone = phone.replace(/[\s\-]/g, '');
+    const cleanPhone = phone.replace(/[\s-]/g, '');
     return `tel:${cleanPhone}`;
   };
 

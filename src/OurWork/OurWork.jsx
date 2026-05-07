@@ -1,7 +1,7 @@
 import { useEffect, useRef  } from "react";
 import { gsap } from "gsap";
 import { Link } from "react-router-dom";
-
+import { ArrowDown } from "lucide-react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   Building2,
@@ -18,7 +18,7 @@ import {
   MapPin,
 } from "lucide-react";
 import BusStand from "./BusStand";
-import Railway from "./Railway";
+import Railway from "./Facility";
 import MunicipalCorporation from "./MunicipalCorporation";
 import SectionThree from "./SectionThree";
 
@@ -98,9 +98,79 @@ const OurWork= () => {
   const heroTitle = useRef(null);
 
  
+const overlayRef = useRef(null);
+const pathsRef = useRef([]);
 
+useEffect(() => {
+  const numPoints = 10;
+  const numPaths = pathsRef.current.length;
+  const delayPointsMax = 0.3;
+  const delayPerPath = 0.25;
 
+ 
+  let pointsDelay = [];
+  let allPoints = [];
 
+  const tl = gsap.timeline({
+    onUpdate: render,
+    defaults: {
+      ease: "power2.inOut",
+      duration: 0.9,
+    },
+  });
+
+  // init points
+  for (let i = 0; i < numPaths; i++) {
+    let points = [];
+    allPoints.push(points);
+    for (let j = 0; j < numPoints; j++) {
+      points.push(100);
+    }
+  }
+
+  function animate() {
+    tl.clear();
+
+    for (let i = 0; i < numPoints; i++) {
+      pointsDelay[i] = Math.random() * delayPointsMax;
+    }
+
+    for (let i = 0; i < numPaths; i++) {
+      let points = allPoints[i];
+      let pathDelay = delayPerPath * i;
+
+      for (let j = 0; j < numPoints; j++) {
+        tl.to(
+          points,
+          { [j]: 0 },
+          pointsDelay[j] + pathDelay
+        );
+      }
+    }
+  }
+
+  function render() {
+    for (let i = 0; i < numPaths; i++) {
+      let path = pathsRef.current[i];
+      let points = allPoints[i];
+
+      let d = `M 0 ${points[0]} C`;
+
+      for (let j = 0; j < numPoints - 1; j++) {
+        let p = ((j + 1) / (numPoints - 1)) * 100;
+        let cp = p - (100 / (numPoints - 1)) / 2;
+
+        d += ` ${cp} ${points[j]} ${cp} ${points[j + 1]} ${p} ${points[j + 1]}`;
+      }
+
+      d += ` V 0 H 0`;
+
+      path.setAttribute("d", d);
+    }
+  }
+
+  animate();
+}, []);
     useEffect(() => {
     gsap.utils.toArray(".idx-row").forEach((row, i) => {
       gsap.from(row, {
@@ -151,7 +221,91 @@ const OurWork= () => {
         
       }}
     >
+<style>{`
+  @media (max-width: 900px) {
+    .hero-wrap {
+      flex-direction: column !important;
+      gap: 36px !important;
+      padding: 100px 20px 60px !important;
+      text-align: center;
+    }
+
+    .hero-left {
+      width: 100%;
+      max-width: 100% !important;
+      z-index: 2;
+    }
+
+    .hero-left h1 {
+      font-size: clamp(2.2rem, 8vw, 3.5rem) !important;
+    }
+
+    .hero-left .hero-sub {
+      font-size: 1rem !important;
+      max-width: 100%;
+    }
+
+    .hero-left .hero-cta {
+      flex-direction: column;
+      align-items: center;
+      gap: 14px !important;
+    }
+
+    .hero-stack {
+      width: 100% !important;
+      max-width: 380px;
+      height: 320px !important;
+      transform: scale(.88);
+      transform-origin: center;
+    }
+
+    .hero-card img,
+    .hero-img {
+      width: 150px !important;
+      height: 190px !important;
+    }
+
+    .hero-stack .hero-card:nth-child(1) {
+      left: 50% !important;
+      top: 0 !important;
+      transform: translateX(-50%) rotate(-5deg) !important;
+    }
+
+    .hero-stack .hero-card:nth-child(2) {
+      left: 10px !important;
+      top: 80px !important;
+      transform: rotate(6deg) !important;
+    }
+
+    .hero-stack .hero-card:nth-child(3) {
+      right: 10px !important;
+      top: 80px !important;
+      transform: rotate(4deg) !important;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-wrap {
+      padding: 90px 14px 50px !important;
+    }
+
+    .hero-stack {
+      max-width: 320px;
+      height: 270px !important;
+      transform: scale(.8);
+    }
+
+    .hero-left h1 {
+      font-size: clamp(2rem, 9vw, 2.8rem) !important;
+    }
+
+    .hero-left .hero-sub {
+      font-size: .95rem !important;
+    }
+  }
+`}</style>
     <header
+     className="hero-wrap" 
   style={{
     minHeight: "100vh",
     display: "flex",
@@ -163,10 +317,32 @@ const OurWork= () => {
       "linear-gradient(120deg,#f4faf5 60%, #e6f4ea 100%)",
     position: "relative",
     overflow: "hidden",
+    zIndex:2,
   }}
 >
+        <svg
+  ref={overlayRef}
+  className="shape-overlays"
+  viewBox="0 0 100 100"
+  preserveAspectRatio="none"
+>
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#ff8709" />
+      <stop offset="100%" stopColor="#f7bdf8" />
+    </linearGradient>
+
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#ffd9b0" />
+      <stop offset="100%" stopColor="#ff8709" />
+    </linearGradient>
+  </defs>
+
+  <path ref={(el) => (pathsRef.current[0] = el)} fill="url(#gradient2)" />
+  <path ref={(el) => (pathsRef.current[1] = el)} fill="url(#gradient1)" />
+</svg>
   {/* LEFT CONTENT */}
-  <div style={{ maxWidth: "600px" }}>
+  <div className="hero-left" style={{ maxWidth: "600px" }}>
     <h1
       ref={heroTitle}
       style={{
@@ -201,20 +377,30 @@ const OurWork= () => {
       className="hero-cta"
       style={{ marginTop: 30, display: "flex", gap: 20 }}
     >
-      <button
-        style={{
-          background: "#065f46",
-          color: "#fff",
-          padding: "14px 26px",
-          borderRadius: 999,
-          border: "none",
-          fontWeight: 600,
-          cursor: "pointer",
-        }}
-      >
-        ● See the work →
-      </button>
-
+    <button
+  onClick={() => {
+    const el = document.getElementById("programs"); // target section id
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  }}
+  style={{
+    background: "#065f46",
+    color: "#fff",
+    padding: "14px 26px",
+    borderRadius: 999,
+    border: "none",
+    fontWeight: 600,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+>
+  ● See the work
+  <ArrowDown size={18} />
+</button>
+<Link to="/contact-us">
       <button
         style={{
           background: "transparent",
@@ -227,17 +413,21 @@ const OurWork= () => {
       >
         Or join 500+ volunteers →
       </button>
+      </Link>
     </div>
 
    
   </div>
 
-  {/* RIGHT IMAGE STACK */}
+  {/* RIGH
+  T IMAGE STACK */}
   <div
+   className="hero-stack"
     style={{
       position: "relative",
       width: "450px",
       height: "500px",
+      
     }}
   >
     {/* CARD 1 */}

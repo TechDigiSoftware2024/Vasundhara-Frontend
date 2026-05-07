@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getVisionMissionPageData } from "../api/public/visionMissionApi";
+import { Link } from "react-router-dom";
+
 const T = {
   ink: "#0B1F17",
   ink2: "#1F3A2E",
@@ -164,20 +166,27 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
         gap: 12,
       }}
     >
+     <button
+  onClick={() => {
+    const el = document.getElementById("vision");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  }}
+  style={{
+    padding: "12px 20px",
+    background: T.ink,
+    color: "#fff",
+    borderRadius: 999,
+    border: "none",
+    cursor: "pointer",
+  }}
+>
+  Explore our vision →
+</button>
+<Link to="/contact-us">
       <button
-        style={{
-          padding: "12px 20px",
-          background: T.ink,
-          color: "#fff",
-          borderRadius: 999,
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Explore our vision →
-      </button>
-
-      <button
+      
         style={{
           padding: "12px 20px",
           border: `1px solid ${T.ink}`,
@@ -188,6 +197,7 @@ const words = apiData?.words || ["Hope", "Care", "Future"];
       >
         Read the mission
       </button>
+      </Link>
     </div>
 
     {/* Stats */}

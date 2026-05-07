@@ -219,6 +219,7 @@ export default function AboutWorkSection() {
   // Loading state with skeletons
   if (loading) {
     return (
+      <>
       <section className="bg-white py-12 lg:py-16">
         <div className="container mb-10 lg:mb-12">
           <div className="text-center">
@@ -236,12 +237,14 @@ export default function AboutWorkSection() {
           <AreaCardSkeleton key={index} index={index} />
         ))}
       </section>
+      </>
     );
   }
 
   // Empty state
   if (areas.length === 0) {
     return (
+      <>
       <section className="bg-white py-12 lg:py-16">
         <div className="container text-center">
           <h2 className="text-3xl font-bold text-green-900 mb-6">
@@ -250,6 +253,7 @@ export default function AboutWorkSection() {
           <p className="text-gray-600">No areas found. Check back later.</p>
         </div>
       </section>
+      </>
     );
   }
 
@@ -279,6 +283,47 @@ export default function AboutWorkSection() {
           index={index}
         />
       ))}
+      <div className="grid md:grid-cols-2 gap-10 items-center py-2">
+
+
+
+
+  <div className="flex justify-center">
+    <img
+      src="../../../Vasundhara-Backend/public/newimg/layout.jpeg"
+      alt="Toilet Awareness"
+      className="w-[500px] h-[500px]  rounded-xl shadow-md"
+    />
+  </div>
+ 
+  <div>
+    <h2 className="text-3xl font-bold text-green-800 mb-4">
+      Sanitation & Toilet Awareness
+    </h2>
+
+    <p className="text-gray-600 mb-4">
+      At Vasundhara Sewa, we strongly promote the use of household toilets to 
+      improve hygiene and public health. Through our “Har Ghar Shauchalay” 
+      initiative, we encourage communities to adopt safe sanitation practices 
+      and eliminate open defecation.
+    </p>
+
+    <p className="text-gray-600 mb-4">
+      We actively conduct awareness campaigns, cleanliness drives, and 
+      community engagement programs to educate people about the importance 
+      of using toilets and maintaining hygiene.
+    </p>
+
+  
+    <p className="text-green-700 font-semibold text-lg">
+      शौचालय का करो प्रयोग, <br />
+      स्वच्छ रहो और बनो निरोग।
+    </p>
+  </div>
+
+</div>
     </section>
+    
+
   );
 }

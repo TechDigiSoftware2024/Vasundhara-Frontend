@@ -240,9 +240,9 @@ export default function Navbar() {
           </div>
 
         <Link
-  to="/municipal-corporation"
+  to="/our-work"
   className={`block p-2 font-semibold rounded transition ${
-    location.pathname === "/municipal-corporation"
+    location.pathname === "/our-work"
       ? "text-green-700 bg-green-50"
       : "text-green-900 hover:bg-green-50"
   }`}
@@ -250,18 +250,31 @@ export default function Navbar() {
 >
   Our Work
 </Link>
-
-          {/* Contact Us */}
-          <Link
-            to="/contact-us"
-            className={`block p-2 font-semibold rounded transition ${location.pathname === "/contact-us"
-                ? "text-green-700 bg-green-50"
-                : "text-green-900 hover:bg-green-50"
-              }`}
-            onClick={() => setMobileMenu(false)}
-          >
-            Contact Us
-          </Link>
+<Link
+  to="/gallery"
+  className={`block p-2 font-semibold rounded transition ${
+    location.pathname === "/gallery"
+      ? "text-green-700 bg-green-50"
+      : "text-green-900 hover:bg-green-50"
+  }`}
+  onClick={() => setMobileMenu(false)}
+>
+  Gallery
+</Link>
+         <Link
+  to="/contact-us"
+  className={`block p-2 font-semibold rounded transition ${
+    location.pathname === "/contact-us"
+      ? "text-green-700 bg-green-50"
+      : "text-green-900 hover:bg-green-50"
+  }`}
+  onClick={() => {
+    setMobileMenu(false);
+    setMobileDropdown(null);
+  }}
+>
+  Contact Us
+</Link>
         </div>
       )}
     </nav>

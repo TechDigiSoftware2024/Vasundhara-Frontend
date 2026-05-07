@@ -10,7 +10,6 @@ import g2 from "../../../Vasundhara-Backend/public/newimg/gallery2.jpg";
 import g3 from "../../../Vasundhara-Backend/public/newimg/gallery3.jpg";
 import g4 from "../../../Vasundhara-Backend/public/newimg/gallery4.jpg";
 import g5 from "../../../Vasundhara-Backend/public/newimg/gallery5.jpg";
-import g6 from "../../../Vasundhara-Backend/public/newimg/gallery6.jpg";
 import s1 from "../../Vasundhara-Backend/public/newimg/s1.png";
 import { Toilet } from "lucide-react";
 const toilet="../Vasundhara-Backend/public/newimg/s4.jpeg"
@@ -24,7 +23,7 @@ const g13="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhOSMnzx5pWu4pj
 export default function Gallery() {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(null);
-  const [reveal, setReveal] = useState(50);
+  const [ setReveal] = useState(50);
   const [loading, setLoading] = useState(true);
 
   const sliderRef = useRef(null);

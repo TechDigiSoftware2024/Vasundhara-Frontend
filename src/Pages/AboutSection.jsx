@@ -7,7 +7,12 @@ import {
   TreePine,Sparkles, Users, Award, HeartHandshake
 } from "lucide-react";
 import { AboutMain } from './AboutMain';
+import { gsap } from "gsap";
+import { useLayoutEffect } from "react";
+
+import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+
 const values = [
     {
       icon: HeartHandshake,
@@ -30,7 +35,7 @@ const values = [
       desc: "12A & 80G certified with public reporting on every rupee spent.",
     },
   ];
-  function useReveal() {
+function useReveal() {
   const ref = useRef(null);
   const [show, setShow] = useState(false);
 
@@ -55,6 +60,8 @@ const values = [
   return { ref, show };
 }
 
+
+
 function Reveal({ children, delay = 0 }) {
   const { ref, show } = useReveal();
 
@@ -69,35 +76,64 @@ function Reveal({ children, delay = 0 }) {
   );
 }
 
-  const timeline = [
-    {
-      year: "1999",
-      title: "Founded in Bhopal",
-      text: "Started as a small collective of sanitation workers and environmentalists.",
-    },
-    {
-      year: "2007",
-      title: "First 100 Public Toilets",
-      text: "Crossed our first major milestone in urban sanitation infrastructure.",
-    },
-    {
-      year: "2014",
-      title: "Swachh Bharat Partner",
-      text: "Became an implementation partner for the national clean India mission.",
-    },
-    {
-      year: "2019",
-      title: "1 Million Saplings",
-      text: "Completed our largest plantation campaign across Madhya Pradesh.",
-    },
-    {
-      year: "2024",
-      title: "Pan-India Operations",
-      text: "Active across 12 states with 800+ active facilities.",
-    },
-  ];
+const timeline = [
+  {
+    year: "2000",
+    title: "Founded in Bhopal",
+    text: "Started as a small collective of sanitation workers and environmentalists.",
+    img: "../../Vasundhara-Backend/public/newimg/location.png",
+  },
+  {
+    year: "2007",
+    title: "First 100 Public Toilets",
+    text: "Crossed our first major milestone in urban sanitation infrastructure.",
+    img: "../../Vasundhara-Backend/public/newimg/s4.jpeg",
+  },
+  {
+    year: "2014",
+    title: "Swachh Bharat Partner",
+    text: "Became an implementation partner for the national clean India mission.",
+    img: "https://bsmedia.business-standard.com/_media/bs/img/article/2019-07/04/full/1562263337-6935.jpg",
+  },
+  {
+    year: "2019",
+    title: "1k Saplings",
+    text: "Completed our largest plantation campaign across Madhya Pradesh.",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk6cl90R1rDc4USKqKaB9xTKjqiXezldS7N1BN52A-yA&s",
+  },
+  {
+    year: "2026",
+    title: "Pan-India Operations",
+    text: "Active across 5 states with 800+ active facilities.",
+    img: "https://www.raiseindiafoundation.org/files/page/whatsapp-image-2024-06-24-at-00-35-19-8962026a-1.webp",
+  },
+];
 
 function AboutSection() {
+  
+  const itemsRef = useRef([]);
+const visualRef = useRef(null);
+const progressRef = useRef(null);
+
+
+const [active, setActive] = useState(0);
+const current = timeline[active];
+useLayoutEffect(() => {
+  if (!visualRef.current) return;
+
+  gsap.fromTo(
+    visualRef.current,
+    { opacity: 0, scale: 0.96, y: 20 },
+    { opacity: 1, scale: 1, y: 0, duration: 0.8 }
+  );
+
+  if (progressRef.current) {
+    gsap.to(progressRef.current, {
+      height: `${((active + 1) / timeline.length) * 100}%`,
+      duration: 0.8,
+    });
+  }
+}, [active]);
   return (
   <>
   {/* ===== 1. HERO SECTION ===== */}
@@ -165,13 +201,26 @@ function AboutSection() {
 
     {/* BUTTONS */}
     <div className="mt-10 flex flex-wrap gap-4 justify-center">
-      <button className="px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-lime-400 text-black font-semibold hover:scale-105 transition">
-        Our Story →
-      </button>
+      <Link
+  to="#">
+      <button
+  onClick={() =>
+    document
+      .getElementById("our-story")
+      .scrollIntoView({ behavior: "smooth" })
+  }
+  className="px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-lime-400 text-black font-semibold hover:scale-105 transition"
+>
+  Our Story →
+</button>
+</Link>
 
-      <button className="px-6 py-3 rounded-xl border border-white/30 text-white hover:bg-white/10 transition">
-        Get Involved
-      </button>
+     <Link
+  to="/contact-us"
+  className="px-6 py-3 rounded-xl border border-white/30 text-white hover:bg-white/10 transition inline-block"
+>
+  Get Involved
+</Link>
     </div>
   </div>
 
@@ -180,7 +229,7 @@ function AboutSection() {
     ↓
   </div>
 </header>
-<AboutMain/>
+<AboutMain id="our-story"/>
  <div className="vsa-root">
       {/* ===== CSS ===== */}
       <style>{`
@@ -200,7 +249,7 @@ function AboutSection() {
         .vsa-container {
           max-width:1180px;
           margin:auto;
-          padding:60px 20px;
+          padding:30px 10px;
         }
 
         .vsa-eyebrow {
@@ -324,12 +373,12 @@ function AboutSection() {
         .vsa-container {
           max-width:1100px;
           margin:auto;
-          padding:80px 20px;
+padding:30px 20px;
         }
 
         .vsa-center {
           text-align:center;
-          margin-bottom:40px;
+          margin-bottom:10px;
         }
 
         .vsa-eyebrow {
@@ -466,34 +515,106 @@ function AboutSection() {
       `}</style>
 
       {/* ===== SECTION ===== */}
-      <section>
-        <div className="vsa-container">
+    <section className="py-16 md:py-20 bg-white">
+  <div className="container mx-auto px-4 sm:px-6">
 
-          <div className="vsa-center">
-            <span className="vsa-eyebrow">Our Journey</span>
-            <h2 className="vsa-h2">
-              25 years of <em>quiet, steady impact</em>
-            </h2>
-          </div>
+    {/* Heading */}
+    <div className="text-center mb-10 md:mb-16">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-800">
+        Our Journey
+      </h2>
+    </div>
 
-          <div className="vsa-timeline">
-            {timeline.map((t, i) => (
-              <Reveal key={i} delay={i * 120}>
-                <div className="vsa-item">
-                  <div className="vsa-dot"></div>
+    {/* Grid */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12">
 
-                  <div className="vsa-card">
-                    <span className="vsa-year">{t.year}</span>
-                    <h4>{t.title}</h4>
-                    <p>{t.text}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+     
+{/* LEFT IMAGE */}
+<div className="lg:sticky lg:top-24 h-fit flex justify-center items-center">
+  <div
+    ref={visualRef}
+    className="relative overflow-hidden rounded-3xl shadow-2xl 
+               w-full max-w-[520px] aspect-[4/5]"
+  >
+    <img
+      src={current.img}
+      alt={current.title}
+      className="w-full h-full object-cover transition duration-700"
+    />
 
-        </div>
-      </section>
+    {/* Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+
+    {/* Year */}
+    <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-sm px-4 py-1 rounded-full text-sm font-semibold text-green-800 shadow">
+      {current.year}
+    </div>
+
+    {/* Bottom Content */}
+    <div className="absolute bottom-6 left-6 right-6 text-white">
+      <h3 className="text-2xl md:text-3xl font-bold">
+        {current.title}
+      </h3>
+
+      <p className="mt-2 text-sm md:text-base text-white/80 leading-relaxed">
+        {current.text}
+      </p>
+    </div>
+
+    {/* Progress Bar */}
+    <div className="absolute right-4 top-0 h-full w-[3px] bg-white/20 rounded-full overflow-hidden">
+      <div
+        ref={progressRef}
+        className="bg-white w-full"
+        style={{ height: "0%" }}
+      />
+    </div>
+  </div>
+</div>
+      {/* RIGHT TIMELINE */}
+      <div className="space-y-6 md:space-y-10">
+        {timeline.map((t, i) => (
+          <Reveal key={i} delay={i * 100}>
+            <div
+              ref={(el) => (itemsRef.current[i] = el)}
+              onMouseEnter={() => setActive(i)}
+              className="pl-5 sm:pl-6 border-l relative cursor-pointer"
+            >
+              {/* DOT */}
+              <div
+                className={`absolute -left-[6px] top-2 w-3 h-3 rounded-full ${
+                  i === active ? "bg-green-600" : "bg-gray-300"
+                }`}
+              ></div>
+
+              {/* CARD */}
+              <div
+                className={`p-4 sm:p-5 rounded-xl border transition ${
+                  i === active
+                    ? "bg-green-50 border-green-400"
+                    : "bg-white"
+                }`}
+              >
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {t.year}
+                </p>
+
+                <h4 className="text-lg sm:text-xl font-semibold">
+                  {t.title}
+                </h4>
+
+                <p className="text-sm sm:text-base text-gray-600">
+                  {t.text}
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>
     </div>
   
   </>

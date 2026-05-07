@@ -14,7 +14,7 @@ import Home from "./Pages/Home";
 
 import MunicipalCorporation from "./OurWork/MunicipalCorporation";
 import BusStand from "./OurWork/BusStand";
-import Railway from "./OurWork/Railway";
+
 import VisionMission from "./About/VisionMission";
 import Team from "./About/Team";
 import ContactUs from "./Pages/ContactUs";
@@ -80,7 +80,6 @@ const router = createBrowserRouter([
           
           
            { path: "municipal-corporation", element: <MunicipalCorporation /> },
-             { path: "railway", element: <Railway /> },
     { path: "bus-stand", element: <BusStand /> },
           { path: "vision-mission", element: <VisionMission /> },
           { path: "team", element: <Team /> },

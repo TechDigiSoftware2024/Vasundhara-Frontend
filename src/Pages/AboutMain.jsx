@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
-import aboutImg from "../../Vasundhara-Backend/public/latestimg/image.png";
+import aboutImg from "../../public/latestimg/image.png";
 import React from "react";
 
 

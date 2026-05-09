@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { MapPin, Calendar, ArrowRight } from "lucide-react";
 import { useReveal } from "./components/useReveal";
-import sanitation from "../Vasundhara-Backend/public/latestimg/project-sanitation.png";
-import trees from "../Vasundhara-Backend/public/latestimg/project-trees.png";
-import waste from "../Vasundhara-Backend/public/latestimg/project-waste.png";
-import hygiene from "../Vasundhara-Backend/public/latestimg/project-hygiene.png";
+import sanitation from "../public/latestimg/project-sanitation.png";
+import trees from "../public/latestimg/project-trees.png";
+import waste from "../public/latestimg/project-waste.png";
+import hygiene from "../public/latestimg/project-hygiene.png";
 
 const projects = [
   { img: sanitation, title: "Bhopal Junction Sanitation Hub", category: "Sanitation", location: "Bhopal, MP", year: "2024", desc: "A flagship Pay-and-Use complex serving 8,000+ commuters daily at one of central India's busiest junctions." },

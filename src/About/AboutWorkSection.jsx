@@ -290,7 +290,7 @@ export default function AboutWorkSection() {
 
   <div className="flex justify-center">
     <img
-      src="../../../Vasundhara-Backend/public/newimg/layout.jpeg"
+      src="../../../public/newimg/layout.jpeg"
       alt="Toilet Awareness"
       className="w-[500px] h-[500px]  rounded-xl shadow-md"
     />

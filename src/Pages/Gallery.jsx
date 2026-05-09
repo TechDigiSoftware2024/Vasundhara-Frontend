@@ -5,16 +5,16 @@ import { Link } from "react-router-dom";
 
 
 // fallback images
-import g1 from "../../../Vasundhara-Backend/public/newimg/gallery1.jpg";
-import g2 from "../../../Vasundhara-Backend/public/newimg/gallery2.jpg";
-import g3 from "../../../Vasundhara-Backend/public/newimg/gallery3.jpg";
-import g4 from "../../../Vasundhara-Backend/public/newimg/gallery4.jpg";
-import g5 from "../../../Vasundhara-Backend/public/newimg/gallery5.jpg";
-import s1 from "../../Vasundhara-Backend/public/newimg/s1.png";
+import g1 from "../../public/newimg/gallery1.jpg";
+import g2 from "../../public/newimg/gallery2.jpg";
+import g3 from "../../public/newimg/gallery3.jpg";
+import g4 from "../../public/newimg/gallery4.jpg";
+import g5 from "../../public/newimg/gallery5.jpg";
+import s1 from "../../public/newimg/s1.png";
 import { Toilet } from "lucide-react";
-const toilet="../Vasundhara-Backend/public/newimg/s4.jpeg"
+const toilet="../public/newimg/s4.jpeg"
 const g7 = "https://cdn.prod.website-files.com/66a10dc6b207d3968468500a/676d088c1566d42473e94869_Reforestation-%E2%80%93-Is-It-Actually-Important.webp";
-const g8 = "../../Vasundhara-Backend/public/newimg/s5.jpeg";
+const g8 = "../../public/newimg/s5.jpeg";
 const g9 = "https://images.timesnowhindi.com/thumb/msid-153166145,thumbsize-89998,width-400,height-225,resizemode-75/153166145.jpg";
 const g10 = "https://s.observers.france24.com/media/display/1d31b76e-f734-11ea-bdb6-005056a9aa4d/w:1024/p:16x9/trash%20bag.JPG";
 const g11 = "https://images.unsplash.com/photo-1593113598332-cd288d649433";
@@ -257,12 +257,12 @@ const [featured, setFeatured] = useState([
     {
       name: "Virendra Kumar Singh",
       msg: "Virendra Kumar Singh has been consistently supporting our NGO by contributing donations and actively participating in our social initiatives. His dedication towards helping the underprivileged has made a real difference in many lives. He believes that even small efforts can bring big change, and his actions truly reflect that. We are thankful for his kindness and ongoing support.",
-      img: "../../Vasundhara-Backend/public/newimg/sp2.jpeg",
+      img: "../../public/newimg/sp2.jpeg",
     },
     {
       name: "Aditya Raj",
       msg: "Aditya Raj has always shown great compassion towards people in need. Through her generous donations and involvement in our activities, she has helped us extend our reach to more communities. Her positive attitude and willingness to support every cause inspire others as well. We truly appreciate her valuable contribution and heartfelt support.",
-      img: "../../Vasundhara-Backend/public/newimg/sp1.jpeg",
+      img: "../../public/newimg/sp1.jpeg",
     },
   ].map((person, i) => (
     <div

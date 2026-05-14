@@ -32,6 +32,10 @@ const g12 =
 const g13 =
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhOSMnzx5pWu4pj16ijslb2QbmSpy0NYZndA&s";
 
+function hasImageSrc(url) {
+  return typeof url === "string" && url.trim().length > 0;
+}
+
 const SUPPORTERS = [
   {
     name: "Virendra Kumar Singh",
@@ -134,37 +138,42 @@ export default function Gallery() {
         if (res?.success) {
           const d = res.data;
 
-          if (d.heroSlides?.length) setSlides(d.heroSlides);
+          // Only replace UI when API returns usable image URLs; otherwise keep static fallbacks
+          const heroOk = (d.heroSlides || []).filter(hasImageSrc);
+          if (heroOk.length) setSlides(heroOk);
 
           if (d.featured?.length) {
-            setFeatured(
-              d.featured.map((f) => ({
+            const nextFeatured = d.featured
+              .map((f) => ({
                 src: f.computedImageUrl,
-                title: f.title,
-                tag: f.tag,
+                title: f.title ?? "",
+                tag: f.tag ?? "",
               }))
-            );
+              .filter((f) => hasImageSrc(f.src));
+            if (nextFeatured.length) setFeatured(nextFeatured);
           }
 
           if (d.timeline?.length) {
-            setTimeline(
-              d.timeline.map((t) => ({
+            const nextTimeline = d.timeline
+              .map((t) => ({
                 img: t.computedImageUrl,
-                title: t.title,
-                date: t.date,
-                loc: t.loc,
+                title: t.title ?? "",
+                date: t.date ?? "",
+                loc: t.loc ?? "",
               }))
-            );
+              .filter((t) => hasImageSrc(t.img));
+            if (nextTimeline.length) setTimeline(nextTimeline);
           }
 
           if (d.stats?.length) {
-            setStats(
-              d.stats.map((s) => ({
+            const nextStats = d.stats
+              .map((s) => ({
                 img: s.computedImageUrl,
-                n: s.value,
-                label: s.label,
+                n: s.value ?? s.n ?? "",
+                label: s.label ?? "",
               }))
-            );
+              .filter((s) => hasImageSrc(s.img));
+            if (nextStats.length) setStats(nextStats);
           }
         }
       } catch (e) {

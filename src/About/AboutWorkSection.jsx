@@ -290,7 +290,7 @@ export default function AboutWorkSection() {
 
   <div className="flex justify-center">
     <img
-      src="../../../public/newimg/layout.jpeg"
+      src="/newimg/layout.jpeg"
       alt="Toilet Awareness"
       className="w-[500px] h-[500px]  rounded-xl shadow-md"
     />

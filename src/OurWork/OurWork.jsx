@@ -53,7 +53,7 @@ const SECTIONS = [
     title: "Municipal Corporation",
     color: "#16a34a",
     icon: Building2,
-    img: "../../Vasundhara-Backend/public/newimg/s3.jpeg",
+    img: "/newimg/s3.jpeg",
     required: true,
     desc: "Urban greening, ward-level plantation drives and community maintenance.",
     stats: [

@@ -81,13 +81,13 @@ const timeline = [
     year: "2000",
     title: "Founded in Bhopal",
     text: "Started as a small collective of sanitation workers and environmentalists.",
-    img: "../../public/newimg/location.png",
+    img: "/newimg/location.png",
   },
   {
     year: "2007",
     title: "First 100 Public Toilets",
     text: "Crossed our first major milestone in urban sanitation infrastructure.",
-    img: "../../public/newimg/s4.jpeg",
+    img: "/newimg/s4.jpeg",
   },
   {
     year: "2014",

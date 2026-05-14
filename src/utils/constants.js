@@ -1,7 +1,5 @@
 // API base (set VITE_API_URL in your .env to override)
 
-import Gallery from "../Pages/Gallery";
-
 // If your backend runs on port 4000, set VITE_API_URL=http://localhost:4000/api
 export const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:9500/api';
